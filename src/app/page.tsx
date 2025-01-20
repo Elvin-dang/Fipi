@@ -1,101 +1,111 @@
-import Image from "next/image";
+"use client";
+
+import { useGlobalStore } from "@/lib/zustand";
+import { useCallback, useEffect, useState } from "react";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const { id, signalingSocket, peerConnection, init } = useGlobalStore();
+  const [receivedChunks, setReceivedChunks] = useState<Blob[]>([]);
+  const [fileUrl, setFileUrl] = useState<string>("");
+  const [fileType, setType] = useState<string>();
+  const [fileName, setName] = useState<string>();
+  const [progress, setProgress] = useState<number>(0);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+  useEffect(() => {
+    init("ws://localhost:8080");
+  }, [init]);
+
+  useEffect(() => {
+    if (peerConnection) {
+      peerConnection.ondatachannel = (event) => {
+        const channel = event.channel;
+
+        channel.onmessage = (e) => {
+          try {
+            const metadata = JSON.parse(e.data);
+            setType(metadata.type);
+            setName(metadata.name);
+            setProgress(0);
+          } catch (error) {
+            if (e.data === "done") {
+              const blob = new Blob(receivedChunks, { type: fileType });
+              setFileUrl(URL.createObjectURL(blob));
+            } else {
+              receivedChunks.push(e.data);
+              setReceivedChunks([...receivedChunks]);
+            }
+          }
+        };
+      };
+    }
+  }, [peerConnection, fileType]);
+
+  const sendFile = useCallback(
+    async (file: File) => {
+      if (peerConnection && signalingSocket) {
+        // Open channel to send file
+        const channel = peerConnection.createDataChannel("file");
+
+        channel.onopen = () => {
+          const reader = new FileReader();
+          let offset = 0;
+          const chunkSize = file.size > 10 * 1024 * 1024 ? 4 * 1024 : 16 * 1024;
+
+          reader.onload = (e) => {
+            if (e.target?.result) {
+              channel.send(e.target.result as ArrayBuffer);
+              offset += chunkSize;
+              if (offset < file.size) {
+                setProgress(Math.round((offset / file.size) * 100));
+                readSlice(offset);
+              } else {
+                channel.send("done");
+                setProgress(100);
+              }
+            }
+          };
+
+          const readSlice = (o: number) => {
+            const slice = file.slice(o, o + chunkSize);
+            reader.readAsArrayBuffer(slice);
+          };
+
+          channel.send(JSON.stringify({ name: file.name, type: file.type }));
+          readSlice(0);
+          console.log(peerConnection.sctp?.maxMessageSize);
+        };
+
+        // Send offer to signaling server
+        const offer = await peerConnection.createOffer();
+        await peerConnection.setLocalDescription(offer);
+        signalingSocket.send(JSON.stringify({ type: "offer", sdp: offer.sdp }));
+      }
+    },
+    [peerConnection, signalingSocket]
+  );
+
+  return (
+    <main>
+      <h1>Sharedrop-like File Sharing</h1>
+      <h2>{id}</h2>
+      <div>
+        <input
+          type="file"
+          onChange={(e) => {
+            if (e.target.files && e.target.files[0]) {
+              sendFile(e.target.files[0]);
+            }
+          }}
+        />
+        {fileUrl && (
+          <div>
+            <a href={fileUrl} download={fileName}>
+              Download File: {fileName || "No File"}
+            </a>
+          </div>
+        )}
+        {progress > 0 && <div>Progress: {progress}/100</div>}
+      </div>
+    </main>
   );
 }
