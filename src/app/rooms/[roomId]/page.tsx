@@ -1,6 +1,13 @@
 "use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { db } from "@/lib/firebase";
 import { useGlobalStore } from "@/providers/globalStateProvider";
 import {
@@ -16,6 +23,8 @@ import {
 } from "firebase/database";
 import React, { use, useEffect, useState } from "react";
 import UserListItem from "./_components/UserListItem";
+import { Button } from "@/components/ui/button";
+import { Package } from "lucide-react";
 
 type Props = {
   params: Promise<{
@@ -33,6 +42,8 @@ const page = ({ params }: Props) => {
   const addNewUserToRoom = useGlobalStore((state) => state.addNewUserToRoom);
   const removeUserFromRoom = useGlobalStore((state) => state.removeUserFromRoom);
 
+  const addMessage = useGlobalStore((state) => state.addMessage);
+
   useEffect(() => {
     if (user) {
       const dbRef = ref(db);
@@ -40,6 +51,9 @@ const page = ({ params }: Props) => {
       const roomRef = child(dbRef, `rooms/${roomId}`);
       const usersRef = child(roomRef, "users");
       const userRef = child(usersRef, user.id);
+
+      const messagesRef = child(dbRef, `rooms/${roomId}/messages`);
+      const receivedMessagesRef = child(messagesRef, user.id);
 
       console.log("Room:\t Connecting to: ", roomId);
 
@@ -49,6 +63,7 @@ const page = ({ params }: Props) => {
           console.log("Firebase: (Re)Connected");
 
           onDisconnect(userRef).remove();
+          onDisconnect(receivedMessagesRef).remove();
 
           set(userRef, user)
             .then(() => {
@@ -58,6 +73,7 @@ const page = ({ params }: Props) => {
               console.warn("Firebase: Adding user to the room failed: ", error);
             });
 
+          // Room section
           onChildAdded(usersRef, (snapshot) => {
             const addedUser = snapshot.val();
             addNewUserToRoom(addedUser);
@@ -80,28 +96,40 @@ const page = ({ params }: Props) => {
             const changedUser = snapshot.val();
             console.log("Room:\t user_changed: ", changedUser);
           });
+
+          // Message section
+          onChildAdded(receivedMessagesRef, (snapshot) => {
+            const addedMessage = snapshot.val();
+            addMessage(addedMessage);
+          });
         } else {
           console.log("Firebase: Disconnected");
           off(usersRef);
+          off(receivedMessagesRef);
         }
       });
     }
   }, [user]);
 
-  return room ? (
+  return room && user ? (
     <div className="">
-      <Card className="w-[350px]">
+      <Card className="w-[350px] m-auto">
         <CardHeader>
-          <CardTitle>Users</CardTitle>
-          <CardDescription>{room.users.length} user(s) in the room</CardDescription>
+          <CardTitle>Lobby</CardTitle>
+          <CardDescription>{room.users.length} User(s)</CardDescription>
         </CardHeader>
         <CardContent>
           <div>
             {room.users.map((u) => (
-              <UserListItem key={u.id} user={u} self={user} />
+              <UserListItem key={u.id} user={u} self={user} roomId={roomId} />
             ))}
           </div>
         </CardContent>
+        <CardFooter>
+          <Button className="w-full">
+            Send to all <Package />
+          </Button>
+        </CardFooter>
       </Card>
     </div>
   ) : (

@@ -1,3 +1,4 @@
+import { Message } from "@/models/message";
 import { Room } from "@/models/room";
 import { User } from "@/models/user";
 import Avatar from "@/utils/avatar";
@@ -8,24 +9,32 @@ export type State = {
   user?: User;
   room?: Room;
   peerConnection?: RTCPeerConnection;
+  messages: Message[];
+  connections: string[];
 };
 
 export type Actions = {
   newRoom: (roomId: string) => void;
   addNewUserToRoom: (user: User) => void;
   removeUserFromRoom: (user: User) => void;
+
+  addMessage: (message: Message) => void;
 };
 
 export type GlobalStore = State & Actions;
 
 export const initGlobalStore = (): State => {
-  // const peerConnection = new RTCPeerConnection({
-  //   iceServers: [
-  //     {
-  //       urls: ["stun:stun1.1.google.com:19302", "stun:stun2.1.google.com:19302"],
-  //     },
-  //   ],
-  // });
+  let peerConnection;
+
+  if (typeof window !== "undefined") {
+    peerConnection = new RTCPeerConnection({
+      iceServers: [
+        {
+          urls: ["stun:stun1.1.google.com:19302", "stun:stun2.1.google.com:19302"],
+        },
+      ],
+    });
+  }
 
   const id = v4();
   const { name, avatar } = Avatar();
@@ -36,14 +45,15 @@ export const initGlobalStore = (): State => {
     avatar,
   };
 
-  return { user };
+  return { user, peerConnection, messages: [], connections: [] };
 };
 
-export const defaultInitState: State = {};
+export const defaultInitState: State = { messages: [], connections: [] };
 
 export const createGlobalStore = (initState: State = defaultInitState) => {
   return createStore<GlobalStore>()((set, get) => ({
     ...initState,
+    // Room
     newRoom: (roomId: string) => set(() => ({ room: { id: roomId, users: [] } })),
     addNewUserToRoom: (user: User) => {
       const room = get().room;
@@ -56,6 +66,10 @@ export const createGlobalStore = (initState: State = defaultInitState) => {
       if (room && room.users.find((u) => u.id === user.id)) {
         set(() => ({ room: { ...room, users: room.users.filter((u) => u.id !== user.id) } }));
       }
+    },
+    // Message
+    addMessage: (message: Message) => {
+      return set((state) => ({ messages: [...state.messages, message] }));
     },
   }));
 };
