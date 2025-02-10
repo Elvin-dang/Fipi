@@ -1,5 +1,6 @@
 "use client";
 
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { db } from "@/lib/firebase";
 import { useGlobalStore } from "@/providers/globalStateProvider";
 import {
@@ -14,6 +15,7 @@ import {
   off,
 } from "firebase/database";
 import React, { use, useEffect, useState } from "react";
+import UserListItem from "./_components/UserListItem";
 
 type Props = {
   params: Promise<{
@@ -86,16 +88,24 @@ const page = ({ params }: Props) => {
     }
   }, [user]);
 
-  return (
-    <div className="@container">
-      <h1>{roomId}</h1>
-      <h1>Users:</h1>
-      <div>
-        {room?.users.map((u) => (
-          <p key={u.id}>{u.name}</p>
-        ))}
-      </div>
+  return room ? (
+    <div className="">
+      <Card className="w-[350px]">
+        <CardHeader>
+          <CardTitle>Users</CardTitle>
+          <CardDescription>{room.users.length} user(s) in the room</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div>
+            {room.users.map((u) => (
+              <UserListItem key={u.id} user={u} self={user} />
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
+  ) : (
+    <p>Loading room...</p>
   );
 };
 

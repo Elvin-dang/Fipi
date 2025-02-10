@@ -1,5 +1,6 @@
 import { Room } from "@/models/room";
 import { User } from "@/models/user";
+import Avatar from "@/utils/avatar";
 import { v4 } from "uuid";
 import { createStore } from "zustand/vanilla";
 
@@ -27,8 +28,7 @@ export const initGlobalStore = (): State => {
   // });
 
   const id = v4();
-  const name = "User " + id;
-  const avatar = "https://ui-avatars.com/api/?name=" + id;
+  const { name, avatar } = Avatar();
 
   const user: User = {
     id,
