@@ -1,12 +1,25 @@
+import { cn } from "@/lib/utils";
+import { useTheme } from "next-themes";
 import React from "react";
 
 type Props = {};
 
 const ThemeSwitcher = (props: Props) => {
+  const { theme, setTheme } = useTheme();
+
+  const handleThemeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTheme(event.target.value);
+  };
+
   return (
     <fieldset className="flex p-0.5 rounded-lg border-solid-border border bg-main w-fit gap-1 items-center">
       <legend className="sr-only">Select a display theme:</legend>
-      <span className="w-[20px] h-[18px] grid place-items-center hover:text-primary cursor-pointer rounded-[6px] text-tertiary">
+      <span
+        className={cn(
+          "w-[20px] h-[18px] grid place-items-center hover:text-primary cursor-pointer rounded-[6px] text-tertiary",
+          theme === "light" && "text-primary bg-el-hover-bg"
+        )}
+      >
         <input
           aria-label="light"
           id="light"
@@ -14,6 +27,8 @@ const ThemeSwitcher = (props: Props) => {
           type="radio"
           value="light"
           name="theme"
+          checked={theme === "light"}
+          onChange={handleThemeChange}
         />
         <label htmlFor="light" className="cursor-pointer w-full h-full grid place-items-center">
           <span className="sr-only">light</span>
@@ -63,7 +78,12 @@ const ThemeSwitcher = (props: Props) => {
           </svg>
         </label>
       </span>
-      <span className="w-[20px] h-[18px] grid place-items-center hover:text-primary cursor-pointer rounded-[6px] text-tertiary">
+      <span
+        className={cn(
+          "w-[20px] h-[18px] grid place-items-center hover:text-primary cursor-pointer rounded-[6px] text-tertiary",
+          theme === "dark" && "text-primary bg-el-hover-bg"
+        )}
+      >
         <input
           aria-label="dark"
           id="dark"
@@ -71,6 +91,8 @@ const ThemeSwitcher = (props: Props) => {
           type="radio"
           value="dark"
           name="theme"
+          checked={theme === "dark"}
+          onChange={handleThemeChange}
         />
         <label htmlFor="dark" className="cursor-pointer w-full h-full grid place-items-center">
           <span className="sr-only">dark</span>
@@ -88,7 +110,12 @@ const ThemeSwitcher = (props: Props) => {
           </svg>
         </label>
       </span>
-      <span className="w-[20px] h-[18px] grid place-items-center hover:text-primary cursor-pointer rounded-[6px] text-primary bg-el-hover-bg">
+      <span
+        className={cn(
+          "w-[20px] h-[18px] grid place-items-center hover:text-primary cursor-pointer rounded-[6px] text-tertiary",
+          theme === "system" && "text-primary bg-el-hover-bg"
+        )}
+      >
         <input
           aria-label="system"
           id="system"
@@ -96,6 +123,8 @@ const ThemeSwitcher = (props: Props) => {
           type="radio"
           value="system"
           name="theme"
+          checked={theme === "system"}
+          onChange={handleThemeChange}
         />
         <label htmlFor="system" className="cursor-pointer w-full h-full grid place-items-center">
           <span className="sr-only">system</span>
