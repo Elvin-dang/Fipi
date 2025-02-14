@@ -1,5 +1,6 @@
 "use client";
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useGlobalStore } from "@/providers/globalStateProvider";
 import React from "react";
 
@@ -13,7 +14,10 @@ const InformationBox = (props: Props) => {
       <div>
         <h1>Your ID: {user.id}</h1>
         <div className="flex items-center gap-2">
-          <img className="rounded-full" src={user.avatar} />
+          <Avatar>
+            <AvatarImage src={user.avatar} />
+            <AvatarFallback>...</AvatarFallback>
+          </Avatar>
           <span>{user.name}</span>
         </div>
       </div>

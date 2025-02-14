@@ -1,4 +1,5 @@
 import { db } from "@/lib/firebase";
+import { Payload } from "@/models/message";
 import { child, push, ref } from "firebase/database";
 
 export const sendMessage = (

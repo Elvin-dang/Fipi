@@ -21,10 +21,12 @@ import {
   set,
   off,
 } from "firebase/database";
-import React, { use, useEffect, useState } from "react";
+import React, { use, useEffect } from "react";
 import UserListItem from "./_components/UserListItem";
 import { Button } from "@/components/ui/button";
 import { Package } from "lucide-react";
+import { sendMessage } from "@/utils/sendMessage";
+import ThemeSwitcher from "@/components/ThemeSwitcher";
 
 type Props = {
   params: Promise<{
@@ -41,8 +43,11 @@ const page = ({ params }: Props) => {
   const newRoom = useGlobalStore((state) => state.newRoom);
   const addNewUserToRoom = useGlobalStore((state) => state.addNewUserToRoom);
   const removeUserFromRoom = useGlobalStore((state) => state.removeUserFromRoom);
+  const clearRoom = useGlobalStore((state) => state.clearRoom);
 
-  const addMessage = useGlobalStore((state) => state.addMessage);
+  const setMessage = useGlobalStore((state) => state.setMessage);
+
+  const removePeerConnection = useGlobalStore((state) => state.removePeerConnection);
 
   useEffect(() => {
     if (user) {
@@ -85,6 +90,7 @@ const page = ({ params }: Props) => {
             (snapshot) => {
               const removedUser = snapshot.val();
               removeUserFromRoom(removedUser);
+              removePeerConnection(removedUser.id);
               console.log("Room:\t user_removed: ", removedUser);
             },
             () => {
@@ -100,22 +106,33 @@ const page = ({ params }: Props) => {
           // Message section
           onChildAdded(receivedMessagesRef, (snapshot) => {
             const addedMessage = snapshot.val();
-            addMessage(addedMessage);
+            setMessage(addedMessage);
           });
         } else {
           console.log("Firebase: Disconnected");
+
+          if (room) {
+            room.users.forEach((u) => sendMessage("LEAVE", room.id, user.id, u.id, {}));
+            clearRoom();
+          }
+
           off(usersRef);
           off(receivedMessagesRef);
         }
       });
     }
-  }, [user]);
+  }, [user, room]);
 
   return room && user ? (
     <div className="">
-      <Card className="w-[350px] m-auto">
+      <Card className="w-[400px] max-w-[100vw] m-auto">
         <CardHeader>
-          <CardTitle>Lobby</CardTitle>
+          <CardTitle>
+            <div className="flex items-center justify-between">
+              <span>Lobby</span>
+              <ThemeSwitcher />
+            </div>
+          </CardTitle>
           <CardDescription>{room.users.length} User(s)</CardDescription>
         </CardHeader>
         <CardContent>

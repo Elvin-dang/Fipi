@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 import { GlobalStoreProvider } from "@/providers/globalStateProvider";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,6 +32,7 @@ export default function RootLayout({
         suppressHydrationWarning={true}
       >
         <GlobalStoreProvider>{children}</GlobalStoreProvider>
+        <Toaster />
       </body>
     </html>
   );
