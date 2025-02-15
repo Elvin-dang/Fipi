@@ -3,11 +3,12 @@ import { Peer } from "@/models/peer";
 import { Room } from "@/models/room";
 import { User } from "@/models/user";
 import Avatar from "@/utils/avatar";
-import { v4 } from "uuid";
 import { createStore } from "zustand/vanilla";
 import { devtools } from "zustand/middleware";
 
 export type State = {
+  publicIP?: string;
+  token?: string;
   user?: User;
   room?: Room;
   message?: Message;
@@ -16,6 +17,7 @@ export type State = {
 
 export type Actions = {
   newRoom: (roomId: string) => void;
+  getRoom: () => Room | undefined;
   addNewUserToRoom: (user: User) => void;
   removeUserFromRoom: (user: User) => void;
   clearRoom: () => void;
@@ -29,9 +31,11 @@ export type Actions = {
 
 export type GlobalStore = State & Actions;
 
-export const initGlobalStore = (): State => {
-  const id = v4();
+export const initGlobalStore = async (): Promise<State> => {
   const { name, avatar } = Avatar();
+
+  const auth = await fetch("/auth");
+  const { id, public_ip, token } = await auth.json();
 
   const user: User = {
     id,
@@ -39,7 +43,7 @@ export const initGlobalStore = (): State => {
     avatar,
   };
 
-  return { user, connections: [] };
+  return { user, connections: [], publicIP: public_ip, token };
 };
 
 export const defaultInitState: State = { connections: [] };
@@ -50,6 +54,9 @@ export const createGlobalStore = (initState: State = defaultInitState) => {
       ...initState,
       // Room
       newRoom: (roomId: string) => set(() => ({ room: { id: roomId, users: [] } })),
+      getRoom: () => {
+        return get().room;
+      },
       addNewUserToRoom: (user: User) => {
         const room = get().room;
         if (room && !room.users.find((u) => u.id === user.id)) {

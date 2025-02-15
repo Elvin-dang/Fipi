@@ -1,9 +1,9 @@
 "use client";
 
-import { type ReactNode, createContext, useRef, useContext } from "react";
+import { type ReactNode, createContext, useRef, useContext, useEffect, useState } from "react";
 import { useStore } from "zustand";
 
-import { type GlobalStore, createGlobalStore, initGlobalStore } from "@/stores/globalStore";
+import { type GlobalStore, State, createGlobalStore, initGlobalStore } from "@/stores/globalStore";
 
 export type GlobalStoreApi = ReturnType<typeof createGlobalStore>;
 
@@ -15,12 +15,21 @@ export interface GlobalStoreProviderProps {
 
 export const GlobalStoreProvider = ({ children }: GlobalStoreProviderProps) => {
   const storeRef = useRef<GlobalStoreApi>(null);
-  if (!storeRef.current) {
-    storeRef.current = createGlobalStore(initGlobalStore());
-  }
+  const [isFetching, setIsFetching] = useState(true);
+
+  useEffect(() => {
+    const fetchInitGlobalState = async () => {
+      storeRef.current = createGlobalStore(await initGlobalStore());
+      setIsFetching(false);
+    };
+    fetchInitGlobalState();
+  }, []);
 
   return (
-    <GlobalStoreContext.Provider value={storeRef.current}>{children}</GlobalStoreContext.Provider>
+    !isFetching &&
+    storeRef.current && (
+      <GlobalStoreContext.Provider value={storeRef.current}>{children}</GlobalStoreContext.Provider>
+    )
   );
 };
 

@@ -1,10 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { v4 } from "uuid";
-import { useRouter } from "next/navigation";
 import { useGlobalStore } from "@/providers/globalStateProvider";
 import dynamic from "next/dynamic";
+import Spinner from "@/components/Spinner";
+import SettingDrawer from "./(client)/_components/Setting/SettingDrawer";
 
 const InformationBox = dynamic(() => import("@/app/_components/InformationBox"), {
   ssr: false,
@@ -13,22 +12,13 @@ const InformationBox = dynamic(() => import("@/app/_components/InformationBox"),
 export default function Home() {
   const user = useGlobalStore((state) => state.user);
 
-  const router = useRouter();
-
-  const onCreateRoom = () => {
-    const roomID = v4();
-    router.push(`/rooms/${roomID}`);
-  };
-
   return user ? (
-    <main className="p-2">
-      <h1 className="text-2xl">FiPi - File Sharing</h1>
+    <main className="p-2 h-screen min-h-screen">
+      {/* <h1 className="text-2xl">FiPi - File Sharing</h1> */}
+
       <InformationBox />
-      <button className="border rounded-sm p-2" onClick={onCreateRoom}>
-        Start a room
-      </button>
     </main>
   ) : (
-    <div>Loading...</div>
+    <Spinner />
   );
 }

@@ -21,26 +21,24 @@ import {
   set,
   off,
 } from "firebase/database";
-import React, { use, useEffect } from "react";
-import UserListItem from "./_components/UserListItem";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Package } from "lucide-react";
 import { sendMessage } from "@/utils/sendMessage";
-import ThemeSwitcher from "@/components/ThemeSwitcher";
+import Spinner from "@/components/Spinner";
+import UserListItem from "./UserListItem";
+import SettingDrawer from "../Setting/SettingDrawer";
 
 type Props = {
-  params: Promise<{
-    roomId: string;
-  }>;
+  roomId: string;
 };
 
-const page = ({ params }: Props) => {
-  const { roomId } = use(params);
-
+const Room = ({ roomId }: Props) => {
   const user = useGlobalStore((state) => state.user);
   const room = useGlobalStore((state) => state.room);
 
   const newRoom = useGlobalStore((state) => state.newRoom);
+  const getRoom = useGlobalStore((state) => state.getRoom);
   const addNewUserToRoom = useGlobalStore((state) => state.addNewUserToRoom);
   const removeUserFromRoom = useGlobalStore((state) => state.removeUserFromRoom);
   const clearRoom = useGlobalStore((state) => state.clearRoom);
@@ -111,6 +109,8 @@ const page = ({ params }: Props) => {
         } else {
           console.log("Firebase: Disconnected");
 
+          const room = getRoom();
+
           if (room) {
             room.users.forEach((u) => sendMessage("LEAVE", room.id, user.id, u.id, {}));
             clearRoom();
@@ -121,37 +121,41 @@ const page = ({ params }: Props) => {
         }
       });
     }
-  }, [user, room]);
+  }, [user]);
 
   return room && user ? (
-    <div className="">
-      <Card className="w-[400px] max-w-[100vw] m-auto">
-        <CardHeader>
-          <CardTitle>
-            <div className="flex items-center justify-between">
-              <span>Lobby</span>
-              <ThemeSwitcher />
-            </div>
-          </CardTitle>
-          <CardDescription>{room.users.length} User(s)</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div>
-            {room.users.map((u) => (
-              <UserListItem key={u.id} user={u} self={user} roomId={roomId} />
-            ))}
+    <Card className="w-[400px] max-w-[100vw] m-auto">
+      <CardHeader>
+        <CardTitle>
+          <div className="flex items-center justify-between">
+            <span>Lobby</span>
+            <SettingDrawer>
+              {/* 
+                Auto download
+                Create private room
+
+              */}
+            </SettingDrawer>
           </div>
-        </CardContent>
-        <CardFooter>
-          <Button className="w-full">
-            Send to all <Package />
-          </Button>
-        </CardFooter>
-      </Card>
-    </div>
+        </CardTitle>
+        <CardDescription>{room.users.length} User(s)</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div>
+          {room.users.map((u) => (
+            <UserListItem key={u.id} user={u} self={user} roomId={roomId} />
+          ))}
+        </div>
+      </CardContent>
+      <CardFooter>
+        <Button className="w-full">
+          Send to all <Package />
+        </Button>
+      </CardFooter>
+    </Card>
   ) : (
-    <p>Loading room...</p>
+    <Spinner />
   );
 };
 
-export default page;
+export default Room;

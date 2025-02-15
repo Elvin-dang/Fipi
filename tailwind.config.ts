@@ -9,6 +9,40 @@ export default {
   ],
   theme: {
     extend: {
+      keyframes: {
+        smallPing: {
+          "75%, 100%": {
+            transform: "scale(1.05)",
+          },
+        },
+        typewriter: {
+          to: {
+            left: "100%",
+          },
+        },
+        blink: {
+          "0%": {
+            opacity: "0",
+          },
+          "0.1%": {
+            opacity: "1",
+          },
+          "50%": {
+            opacity: "1",
+          },
+          "50.1%": {
+            opacity: "0",
+          },
+          "100%": {
+            opacity: "0",
+          },
+        },
+      },
+      animation: {
+        "small-ping": "smallPing 1s cubic-bezier(0, 0, 0.2, 1) infinite",
+        typewriter: "typewriter 2s steps(11) forwards",
+        caret: "typewriter 2s steps(11) forwards, blink 1s steps(11) infinite 2s",
+      },
       colors: {
         tertiary: "var(--tertiary)",
         "el-hover-bg": "var(--el-hover-bg)",

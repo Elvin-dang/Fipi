@@ -5,6 +5,7 @@ import "./globals.css";
 import { GlobalStoreProvider } from "@/providers/globalStateProvider";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/providers/themeProvider";
+import { DrawerCSSProvider } from "@/providers/drawerCSSProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,7 +30,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased p-2`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning={true}
       >
         <ThemeProvider
@@ -38,7 +39,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <GlobalStoreProvider>{children}</GlobalStoreProvider>
+          <DrawerCSSProvider>
+            <GlobalStoreProvider>{children}</GlobalStoreProvider>
+          </DrawerCSSProvider>
         </ThemeProvider>
         <Toaster />
       </body>
