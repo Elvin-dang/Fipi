@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { Message } from "@/models/message";
 import { User } from "@/models/user";
 import { useGlobalStore } from "@/providers/globalStateProvider";
-import { downloadFile, toFileSize } from "@/utils/file";
+import { downloadFile, reduceFiles, toFileSize } from "@/utils/file";
 import { sendMessage } from "@/utils/sendMessage";
 import { Check, FileCheck2, FileX2, Paperclip, Smile, X } from "lucide-react";
 import React, { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
@@ -118,7 +118,7 @@ const UserListItem = ({ user, self, roomId }: Props) => {
 
   const onFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
+      const file = await reduceFiles(e.target.files, user.id);
 
       let peerConnection = getPeerConnection(user.id);
 
@@ -183,6 +183,9 @@ const UserListItem = ({ user, self, roomId }: Props) => {
             <ToastText main={user.name} text="accepted the file" icon={<FileCheck2 size={16} />} />
           );
 
+          let sendQueue: number[] = [];
+          let isSending = false;
+
           const reader = new FileReader();
           let offset = 0;
           const chunkSize = file.size > 10 * 1024 * 1024 ? 4 * 1024 : 16 * 1024;
@@ -193,7 +196,7 @@ const UserListItem = ({ user, self, roomId }: Props) => {
               offset += chunkSize;
               if (offset < file.size) {
                 setFileSendingProgress(Math.round((offset / file.size) * 100));
-                readSlice(offset);
+                queueData(offset);
               } else {
                 setFileSendingProgress(100);
                 channel.close();
@@ -207,7 +210,27 @@ const UserListItem = ({ user, self, roomId }: Props) => {
             reader.readAsArrayBuffer(slice);
           };
 
-          readSlice(0);
+          const sendNext = () => {
+            if (isSending || sendQueue.length === 0) return;
+
+            if (channel.bufferedAmount < 65536) {
+              isSending = true;
+              const data = sendQueue.shift();
+              if (data !== undefined) readSlice(data);
+              isSending = false;
+
+              sendNext();
+            } else {
+              setTimeout(sendNext, 50);
+            }
+          };
+
+          const queueData = (data: number) => {
+            sendQueue.push(data);
+            sendNext();
+          };
+
+          queueData(0);
           break;
         case "REJECT":
           setPendingRequest(false);
@@ -323,7 +346,13 @@ const UserListItem = ({ user, self, roomId }: Props) => {
         </div>
         {self.id !== user.id && !isOpen && (
           <div>
-            <input type="file" className="hidden" ref={fileInputRef} onChange={onFileChange} />
+            <input
+              type="file"
+              className="hidden"
+              multiple
+              ref={fileInputRef}
+              onChange={onFileChange}
+            />
             <Button variant="outline" onClick={openChooseFiles}>
               Send <Paperclip />
             </Button>

@@ -8,9 +8,8 @@ export function GET(req: NextRequest) {
     req.headers.get("X-Real-IP") ||
     req.headers.get("cf-connecting-ip");
 
-  const firebaseTokenGenerator = new FirebaseTokenGenerator(
-    "lXYNngJJ4nvqABm7PkHsJxGsQqeitkIQoDYfVEBA"
-  );
+  // @ts-ignore
+  const firebaseTokenGenerator = new FirebaseTokenGenerator(process.env.SECRET);
 
   const uid = v4();
   const token = firebaseTokenGenerator.createToken({ uid, id: uid }, { expires: 32503680000 });
