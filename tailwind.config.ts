@@ -37,11 +37,17 @@ export default {
             opacity: "0",
           },
         },
+        shine: {
+          "0%": { backgroundPosition: "200% 0" },
+          "25%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "-200% 0" },
+        },
       },
       animation: {
         "small-ping": "smallPing 1s cubic-bezier(0, 0, 0.2, 1) infinite",
         typewriter: "typewriter 2s steps(11) forwards",
         caret: "typewriter 2s steps(11) forwards, blink 1s steps(11) infinite 2s",
+        shine: "shine 3s ease-out infinite",
       },
       colors: {
         tertiary: "var(--tertiary)",

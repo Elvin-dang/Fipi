@@ -10,7 +10,7 @@ const InformationBox = () => {
 
   const router = useRouter();
 
-  const onCreateRoom = () => {
+  const go = () => {
     router.replace("/g");
   };
 
@@ -22,7 +22,7 @@ const InformationBox = () => {
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full border-sky-400 bg-sky-400 border opacity-75" />
             <Avatar
               className="h-full w-full animate-small-ping cursor-pointer"
-              onClick={() => onCreateRoom()}
+              onClick={() => go()}
             >
               <AvatarImage src={user.avatar} />
               <AvatarFallback>...</AvatarFallback>

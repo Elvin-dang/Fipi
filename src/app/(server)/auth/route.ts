@@ -9,7 +9,7 @@ export function GET(req: NextRequest) {
     req.headers.get("cf-connecting-ip");
 
   // @ts-expect-error there is always a SECRET
-  const firebaseTokenGenerator = new FirebaseTokenGenerator(process.env.SECRET);
+  const firebaseTokenGenerator = new FirebaseTokenGenerator(process.env.FIREBASE_SECRET);
 
   const uid = v4();
   const token = firebaseTokenGenerator.createToken({ uid, id: uid }, { expires: 32503680000 });

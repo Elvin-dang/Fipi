@@ -12,6 +12,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import { useSettingStore } from "@/providers/settingStoreProvider";
 import { Settings } from "lucide-react";
 import React, { ReactNode } from "react";
@@ -57,6 +58,7 @@ const SettingDrawer = ({ children }: Props) => {
                 </p>
               </div>
             </div>
+            <Separator className="my-4" />
             {children}
           </div>
           <DrawerFooter>

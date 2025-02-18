@@ -20,6 +20,7 @@ import {
   ref,
   set,
   off,
+  remove,
 } from "firebase/database";
 import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -28,6 +29,9 @@ import { sendMessage } from "@/utils/sendMessage";
 import Spinner from "@/components/Spinner";
 import UserListItem from "./UserListItem";
 import SettingDrawer from "../Setting/SettingDrawer";
+import CreatePrivateRoomButton from "./CreatePrivateRoomButton";
+import LeavePrivateRoomButton from "./LeavePrivateRoomButton";
+import { User } from "@/models/user";
 
 type Props = {
   roomId?: string;
@@ -110,19 +114,35 @@ const Room = ({ roomId, type }: Props) => {
         } else {
           console.log("Firebase: Disconnected");
 
-          const room = getRoom();
-
-          if (room) {
-            room.users.forEach((u) => sendMessage("LEAVE", room.id, user.id, u.id, {}));
-            clearRoom();
-          }
-
-          off(usersRef);
-          off(receivedMessagesRef);
+          leaveRoom(user);
         }
       });
     }
   }, [user, roomId]);
+
+  const leaveRoom = (user: User) => {
+    const dbRef = ref(db);
+    const roomRef = child(dbRef, `rooms/${roomId}`);
+    const usersRef = child(roomRef, "users");
+    const userRef = child(usersRef, user.id);
+
+    const messagesRef = child(dbRef, `rooms/${roomId}/messages`);
+    const receivedMessagesRef = child(messagesRef, user.id);
+
+    const room = getRoom();
+
+    if (room) {
+      room.users.forEach((u) => sendMessage("LEAVE", room.id, user.id, u.id, {}));
+
+      remove(userRef);
+      remove(receivedMessagesRef);
+
+      off(usersRef);
+      off(receivedMessagesRef);
+
+      clearRoom();
+    }
+  };
 
   return roomId && room && user ? (
     <Card className="w-[400px] max-w-[100vw] m-auto">
@@ -132,10 +152,21 @@ const Room = ({ roomId, type }: Props) => {
             <span>Lobby</span>
             <SettingDrawer>
               {/* 
-                Auto download
-                Create private room
-
+                Auto download (done)
+                Create private room (done)
+                Leave private room (done)
               */}
+              {type === "public" ? (
+                <>
+                  <CreatePrivateRoomButton leaveRoom={leaveRoom} user={user} />
+                </>
+              ) : (
+                type === "private" && (
+                  <>
+                    <LeavePrivateRoomButton leaveRoom={leaveRoom} user={user} />
+                  </>
+                )
+              )}
             </SettingDrawer>
           </div>
         </CardTitle>
