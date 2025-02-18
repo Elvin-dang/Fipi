@@ -24,7 +24,7 @@ import {
 } from "firebase/database";
 import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Package } from "lucide-react";
+import { BadgeInfo, Link, Package } from "lucide-react";
 import { sendMessage } from "@/utils/sendMessage";
 import Spinner from "@/components/Spinner";
 import UserListItem from "./UserListItem";
@@ -32,6 +32,8 @@ import SettingDrawer from "../Setting/SettingDrawer";
 import CreatePrivateRoomButton from "./CreatePrivateRoomButton";
 import LeavePrivateRoomButton from "./LeavePrivateRoomButton";
 import { User } from "@/models/user";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { toast } from "sonner";
 
 type Props = {
   roomId?: string;
@@ -144,18 +146,47 @@ const Room = ({ roomId, type }: Props) => {
     }
   };
 
+  const handleCopyRoomLink = () => {
+    const link = process.env.NEXT_PUBLIC_VERCEL_URL
+      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/rooms/${roomId}`
+      : `http://${process.env.NEXT_PUBLIC_URL}/rooms/${roomId}`;
+    navigator.clipboard.writeText(link);
+    toast.success("Room link copied 🎉", {
+      position: "bottom-center",
+      duration: 2000,
+    });
+  };
+
   return roomId && room && user ? (
     <Card className="w-[400px] max-w-[100vw] m-auto">
       <CardHeader>
         <CardTitle>
           <div className="flex items-center justify-between">
-            <span>Lobby</span>
+            {type === "public" ? (
+              <div className="flex items-end">
+                <span>Lobby</span>
+                <Tooltip>
+                  <TooltipTrigger className="ml-2">
+                    <BadgeInfo className="text-gray-500 size-4" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    A shared virtual space where users connected to the same network can discover
+                    and see each other
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+            ) : (
+              type === "private" && (
+                <div className="flex items-end">
+                  <span>Lobby</span>
+                  <Link
+                    className="text-gray-500 size-4 ml-2 cursor-pointer hover:text-gray-700"
+                    onClick={handleCopyRoomLink}
+                  />
+                </div>
+              )
+            )}
             <SettingDrawer>
-              {/* 
-                Auto download (done)
-                Create private room (done)
-                Leave private room (done)
-              */}
               {type === "public" ? (
                 <>
                   <CreatePrivateRoomButton leaveRoom={leaveRoom} user={user} />

@@ -7,6 +7,7 @@ import { Toaster } from "sonner";
 import { ThemeProvider } from "@/providers/themeProvider";
 import { DrawerCSSProvider } from "@/providers/drawerCSSProvider";
 import { SettingStoreProvider } from "@/providers/settingStoreProvider";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,9 +42,11 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <DrawerCSSProvider>
-            <GlobalStoreProvider>
-              <SettingStoreProvider>{children}</SettingStoreProvider>
-            </GlobalStoreProvider>
+            <TooltipProvider delayDuration={200}>
+              <GlobalStoreProvider>
+                <SettingStoreProvider>{children}</SettingStoreProvider>
+              </GlobalStoreProvider>
+            </TooltipProvider>
           </DrawerCSSProvider>
         </ThemeProvider>
         <Toaster />

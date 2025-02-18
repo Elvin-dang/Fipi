@@ -18,6 +18,7 @@
     "@radix-ui/react-progress": "^1.1.2",
     "@radix-ui/react-separator": "^1.1.2",
     "@radix-ui/react-slot": "^1.1.2",
+    "@radix-ui/react-tooltip": "^1.1.8",
     "@types/firebase-token-generator": "^2.0.33",
     "@types/jszip": "^3.4.1",
     "@types/lodash": "^4.17.15",
