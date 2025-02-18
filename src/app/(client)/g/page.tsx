@@ -7,7 +7,7 @@ const page = async () => {
   const url = process.env.VERCEL_URL
     ? "https://" + process.env.VERCEL_URL
     : "http://" + process.env.URL;
-  const data = await fetch(`${process.env.VERCEL_URL || process.env.URL}/room`);
+  const data = await fetch(`${url}/room`);
   const { name } = await data.json();
 
   return <Room roomId={name} />;
