@@ -183,7 +183,7 @@ const UserListItem = ({ user, self, roomId }: Props) => {
             <ToastText main={user.name} text="accepted the file" icon={<FileCheck2 size={16} />} />
           );
 
-          let sendQueue: number[] = [];
+          const sendQueue: number[] = [];
           let isSending = false;
 
           const reader = new FileReader();

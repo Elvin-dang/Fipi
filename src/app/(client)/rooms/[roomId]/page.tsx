@@ -1,4 +1,4 @@
-import React, { use } from "react";
+import React from "react";
 import Room from "../../_components/Room/Room";
 
 type Props = {

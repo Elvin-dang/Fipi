@@ -2,9 +2,7 @@ import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
 import React from "react";
 
-type Props = {};
-
-const ThemeSwitcher = (props: Props) => {
+const ThemeSwitcher = () => {
   const { theme, setTheme } = useTheme();
 
   const handleThemeChange = (event: React.ChangeEvent<HTMLInputElement>) => {

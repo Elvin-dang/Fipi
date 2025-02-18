@@ -3,7 +3,6 @@
 import { useGlobalStore } from "@/providers/globalStateProvider";
 import dynamic from "next/dynamic";
 import Spinner from "@/components/Spinner";
-import SettingDrawer from "./(client)/_components/Setting/SettingDrawer";
 
 const InformationBox = dynamic(() => import("@/app/_components/InformationBox"), {
   ssr: false,

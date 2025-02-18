@@ -1,6 +1,8 @@
 import React from "react";
 import Room from "../_components/Room/Room";
 
+export const dynamic = "force-dynamic";
+
 type Props = {};
 
 const page = async (props: Props) => {

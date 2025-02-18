@@ -5,9 +5,7 @@ import { useGlobalStore } from "@/providers/globalStateProvider";
 import { useRouter } from "next/navigation";
 import React from "react";
 
-type Props = {};
-
-const InformationBox = (props: Props) => {
+const InformationBox = () => {
   const user = useGlobalStore((state) => state.user);
 
   const router = useRouter();

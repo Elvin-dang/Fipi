@@ -8,7 +8,7 @@ export function GET(req: NextRequest) {
     req.headers.get("X-Real-IP") ||
     req.headers.get("cf-connecting-ip");
 
-  // @ts-ignore
+  // @ts-expect-error
   const firebaseTokenGenerator = new FirebaseTokenGenerator(process.env.SECRET);
 
   const uid = v4();
