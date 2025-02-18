@@ -3,7 +3,7 @@
 import { type ReactNode, createContext, useRef, useContext, useEffect, useState } from "react";
 import { useStore } from "zustand";
 
-import { type GlobalStore, State, createGlobalStore, initGlobalStore } from "@/stores/globalStore";
+import { type GlobalStore, createGlobalStore, initGlobalStore } from "@/stores/globalStore";
 
 export type GlobalStoreApi = ReturnType<typeof createGlobalStore>;
 

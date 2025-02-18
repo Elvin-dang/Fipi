@@ -8,7 +8,7 @@ export function GET(req: NextRequest) {
     req.headers.get("X-Forwarded-For") ||
     req.headers.get("X-Real-IP") ||
     req.headers.get("cf-connecting-ip");
-  // @ts-expect-error
+  // @ts-expect-error ip always exists
   const name = crypto.createHmac("md5", secret).update(ip).digest("hex");
 
   return NextResponse.json({ name });

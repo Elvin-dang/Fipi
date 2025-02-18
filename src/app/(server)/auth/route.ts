@@ -8,7 +8,7 @@ export function GET(req: NextRequest) {
     req.headers.get("X-Real-IP") ||
     req.headers.get("cf-connecting-ip");
 
-  // @ts-expect-error
+  // @ts-expect-error there is always a SECRET
   const firebaseTokenGenerator = new FirebaseTokenGenerator(process.env.SECRET);
 
   const uid = v4();

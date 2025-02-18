@@ -3,9 +3,7 @@ import Room from "../_components/Room/Room";
 
 export const dynamic = "force-dynamic";
 
-type Props = {};
-
-const page = async (props: Props) => {
+const page = async () => {
   const data = await fetch(`${process.env.URL}/room`);
   const { name } = await data.json();
 

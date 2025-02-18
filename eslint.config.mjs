@@ -22,19 +22,7 @@ const eslintConfig = [
       "@typescript-eslint": tseslint,
     },
     rules: {
-      "@typescript-eslint/ban-types": [
-        "error",
-        {
-          types: {
-            Object: {
-              message: "Use {} or a more specific type instead.",
-              fixWith: "{}",
-            },
-          },
-          extendDefaults: true,
-          allowObjectTypes: true,
-        },
-      ],
+      "@typescript-eslint/no-empty-object-type": "off",
     },
   },
 ];

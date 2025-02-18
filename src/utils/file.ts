@@ -2,7 +2,7 @@ import JSZip from "jszip";
 import { toast } from "sonner";
 
 export const toFileSize = (size: number) => {
-  const fSExt = new Array("Bytes", "KB", "MB", "GB");
+  const fSExt = ["Bytes", "KB", "MB", "GB"];
   let i = 0;
   while (size > 900) {
     size /= 1024;
