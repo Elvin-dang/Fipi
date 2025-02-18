@@ -1,5 +1,6 @@
 import ThemeSwitcher from "@/components/ThemeSwitcher";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Drawer,
   DrawerClose,
@@ -10,6 +11,8 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import { Label } from "@/components/ui/label";
+import { useSettingStore } from "@/providers/settingStoreProvider";
 import { Settings } from "lucide-react";
 import React, { ReactNode } from "react";
 
@@ -18,6 +21,8 @@ type Props = {
 };
 
 const SettingDrawer = ({ children }: Props) => {
+  const { autoSave, setAutoSave } = useSettingStore((state) => state);
+
   return (
     <Drawer>
       <DrawerTrigger asChild>
@@ -28,11 +33,30 @@ const SettingDrawer = ({ children }: Props) => {
       <DrawerContent>
         <div className="mx-auto w-full max-w-sm">
           <DrawerHeader>
-            <DrawerTitle>Setting</DrawerTitle>
-            <DrawerDescription>Room and system settings</DrawerDescription>
+            <DrawerTitle>
+              <div className="flex items-center justify-between">
+                <p className="text-xl">Setting</p>
+                <ThemeSwitcher />
+              </div>
+            </DrawerTitle>
+            <DrawerDescription className="text-left">Room and system settings</DrawerDescription>
           </DrawerHeader>
-          <div className="p-4 pb-0">
-            <ThemeSwitcher />
+          <div className="p-4 pb-2">
+            <div className="flex items-top space-x-2 mt-2">
+              <Checkbox
+                id="auto-download"
+                checked={autoSave}
+                onCheckedChange={(checked) => setAutoSave(checked)}
+              />
+              <div className="grid gap-1.5 leading-none">
+                <Label htmlFor="auto-download" className="font-semibold">
+                  Auto Download
+                </Label>
+                <p className="text-sm text-muted-foreground">
+                  Instantly download after successfully receiving files
+                </p>
+              </div>
+            </div>
             {children}
           </div>
           <DrawerFooter>

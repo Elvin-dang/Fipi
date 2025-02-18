@@ -6,6 +6,7 @@ import { GlobalStoreProvider } from "@/providers/globalStateProvider";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/providers/themeProvider";
 import { DrawerCSSProvider } from "@/providers/drawerCSSProvider";
+import { SettingStoreProvider } from "@/providers/settingStoreProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,7 +41,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <DrawerCSSProvider>
-            <GlobalStoreProvider>{children}</GlobalStoreProvider>
+            <GlobalStoreProvider>
+              <SettingStoreProvider>{children}</SettingStoreProvider>
+            </GlobalStoreProvider>
           </DrawerCSSProvider>
         </ThemeProvider>
         <Toaster />

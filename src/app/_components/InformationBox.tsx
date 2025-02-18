@@ -11,7 +11,7 @@ const InformationBox = () => {
   const router = useRouter();
 
   const onCreateRoom = () => {
-    router.push("/g");
+    router.replace("/g");
   };
 
   return (

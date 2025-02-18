@@ -10,7 +10,7 @@ type Props = {
 const Page = async ({ params }: Props) => {
   const { roomId } = await params;
 
-  return <Room roomId={roomId} />;
+  return <Room roomId={roomId} type="private" />;
 };
 
 export default Page;

@@ -31,9 +31,10 @@ import SettingDrawer from "../Setting/SettingDrawer";
 
 type Props = {
   roomId?: string;
+  type: "private" | "public";
 };
 
-const Room = ({ roomId }: Props) => {
+const Room = ({ roomId, type }: Props) => {
   const user = useGlobalStore((state) => state.user);
   const room = useGlobalStore((state) => state.room);
 

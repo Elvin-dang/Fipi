@@ -10,20 +10,15 @@ const Page = () => {
 
   useEffect(() => {
     const asyncTask = async () => {
-      //   const url = process.env.VERCEL_URL
-      // ? "https://" + process.env.VERCEL_URL
-      // : "http://" + process.env.URL;
       const data = await fetch(`/room`);
       const jsonData = await data.json();
 
       if (jsonData.name) setRoomId(jsonData.name);
-
-      console.log("G CLIENT", jsonData);
     };
     asyncTask();
   }, []);
 
-  return <Room roomId={roomId} />;
+  return <Room roomId={roomId} type="public" />;
 };
 
 export default Page;

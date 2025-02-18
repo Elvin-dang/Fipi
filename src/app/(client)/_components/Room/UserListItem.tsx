@@ -14,6 +14,7 @@ import { Check, FileCheck2, FileX2, Paperclip, Smile, X } from "lucide-react";
 import React, { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import ToastText from "./ToastText";
+import { useSettingStore } from "@/providers/settingStoreProvider";
 
 type Props = {
   roomId: string;
@@ -51,6 +52,7 @@ const UserListItem = ({ user, self, roomId }: Props) => {
   }>(undefined);
 
   const message = useGlobalStore((state) => state.message);
+  const getAutoSave = useSettingStore((state) => state.getAutoSave);
 
   const createPeerConnection = useGlobalStore((state) => state.createPeerConnection);
   const getPeerConnection = useGlobalStore((state) => state.getPeerConnection);
@@ -245,74 +247,85 @@ const UserListItem = ({ user, self, roomId }: Props) => {
     };
   }, []);
 
-  const receiveFileDataChannel = useCallback((peerConnection: RTCPeerConnection) => {
-    peerConnection.ondatachannel = (event) => {
-      const receivedChannel = event.channel;
-      receivedDataChannel.current = receivedChannel;
+  const receiveFileDataChannel = useCallback(
+    (peerConnection: RTCPeerConnection) => {
+      peerConnection.ondatachannel = (event) => {
+        const receivedChannel = event.channel;
+        receivedDataChannel.current = receivedChannel;
 
-      receivedChannel.binaryType = "arraybuffer";
+        receivedChannel.binaryType = "arraybuffer";
 
-      receivedChannel.onmessage = (event) => {
-        try {
-          const message: Message = JSON.parse(event.data);
+        receivedChannel.onmessage = (event) => {
+          try {
+            const message: Message = JSON.parse(event.data);
 
-          switch (message.type) {
-            case "REQUEST":
-              setPendingRespond(true);
-              setFileInfo(message.payload.file);
-              fileInfoRef.current = message.payload.file;
-              setIsOpen(true);
-              break;
-            default:
-              break;
-          }
-        } catch (e) {
-          if (e instanceof SyntaxError) {
-            receivedChunks.current.push(event.data);
-            if (fileInfoRef.current) {
-              setFileReceivingProgress(
-                Math.round(
-                  ((receivedChunks.current.length * fileInfoRef.current.chunkSize) /
-                    fileInfoRef.current.size) *
-                    100
-                )
-              );
+            switch (message.type) {
+              case "REQUEST":
+                setPendingRespond(true);
+                setFileInfo(message.payload.file);
+                fileInfoRef.current = message.payload.file;
+                setIsOpen(true);
+                break;
+              default:
+                break;
+            }
+          } catch (e) {
+            if (e instanceof SyntaxError) {
+              receivedChunks.current.push(event.data);
+              if (fileInfoRef.current) {
+                setFileReceivingProgress(
+                  Math.round(
+                    ((receivedChunks.current.length * fileInfoRef.current.chunkSize) /
+                      fileInfoRef.current.size) *
+                      100
+                  )
+                );
+              }
             }
           }
-        }
-      };
-
-      receivedChannel.onclose = () => {
-        const resetState = () => {
-          setIsOpen(false);
-          receivedChunks.current = [];
-          setFileInfo(undefined);
-          fileInfoRef.current = undefined;
-          setFileReceivingProgress(0);
-          receivedDataChannel.current = undefined;
-
-          sendMessage("FILE_COMPLETE", roomId, self.id, user.id, {});
         };
 
-        if (fileInfoRef.current) {
-          setFileReceivingProgress(100);
-          const receivedBlob = new Blob(receivedChunks.current);
-          toast(user.name, {
-            description: fileInfoRef.current.name,
-            duration: Infinity,
-            action: {
-              label: "Download",
-              onClick: () => {
-                if (fileInfoRef.current) downloadFile(receivedBlob, fileInfoRef.current.name);
-                resetState();
-              },
-            },
-            onDismiss: () => resetState(),
-          });
-        }
+        receivedChannel.onclose = () => {
+          const resetState = () => {
+            setIsOpen(false);
+            receivedChunks.current = [];
+            setFileInfo(undefined);
+            fileInfoRef.current = undefined;
+            setFileReceivingProgress(0);
+            receivedDataChannel.current = undefined;
+
+            sendMessage("FILE_COMPLETE", roomId, self.id, user.id, {});
+          };
+
+          const download = (blob: Blob) => {
+            if (fileInfoRef.current) downloadFile(blob, fileInfoRef.current.name);
+            resetState();
+          };
+
+          if (fileInfoRef.current) {
+            setFileReceivingProgress(100);
+            const receivedBlob = new Blob(receivedChunks.current);
+            if (getAutoSave()) {
+              download(receivedBlob);
+            } else {
+              toast(user.name, {
+                description: fileInfoRef.current.name,
+                duration: Infinity,
+                action: {
+                  label: "Download",
+                  onClick: () => {
+                    download(receivedBlob);
+                  },
+                },
+                onDismiss: () => resetState(),
+              });
+            }
+          }
+        };
       };
-    };
-  }, []);
+    },
+    [getAutoSave]
+  );
 
   const onAccept = async () => {
     setPendingRespond(false);
@@ -420,7 +433,7 @@ const UserListItem = ({ user, self, roomId }: Props) => {
                     </div>
                   ) : (
                     <div className="flex justify-between items-center w-full">
-                      <p>File sent </p>
+                      <p>File sent</p>
                       <Smile />
                     </div>
                   )}
