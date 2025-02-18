@@ -11,5 +11,8 @@ export function GET(req: NextRequest) {
   // @ts-expect-error ip always exists
   const name = crypto.createHmac("md5", secret).update(ip).digest("hex");
 
+  console.log("ROOM SERVER IP", ip);
+  console.log("ROOM SERVER NAME", name);
+
   return NextResponse.json({ name });
 }

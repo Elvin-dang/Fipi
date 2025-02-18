@@ -30,7 +30,7 @@ import UserListItem from "./UserListItem";
 import SettingDrawer from "../Setting/SettingDrawer";
 
 type Props = {
-  roomId: string;
+  roomId?: string;
 };
 
 const Room = ({ roomId }: Props) => {
@@ -48,7 +48,7 @@ const Room = ({ roomId }: Props) => {
   const removePeerConnection = useGlobalStore((state) => state.removePeerConnection);
 
   useEffect(() => {
-    if (user) {
+    if (user && roomId) {
       const dbRef = ref(db);
       const connectedRef = child(dbRef, ".info/connected");
       const roomRef = child(dbRef, `rooms/${roomId}`);
@@ -121,9 +121,9 @@ const Room = ({ roomId }: Props) => {
         }
       });
     }
-  }, [user]);
+  }, [user, roomId]);
 
-  return room && user ? (
+  return roomId && room && user ? (
     <Card className="w-[400px] max-w-[100vw] m-auto">
       <CardHeader>
         <CardTitle>
