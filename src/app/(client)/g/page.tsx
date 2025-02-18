@@ -4,6 +4,9 @@ import Room from "../_components/Room/Room";
 export const dynamic = "force-dynamic";
 
 const page = async () => {
+  const url = process.env.VERCEL_URL
+    ? "https://" + process.env.VERCEL_URL
+    : "http://" + process.env.URL;
   const data = await fetch(`${process.env.VERCEL_URL || process.env.URL}/room`);
   const { name } = await data.json();
 
