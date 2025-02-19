@@ -32,8 +32,12 @@ import SettingDrawer from "../Setting/SettingDrawer";
 import CreatePrivateRoomButton from "./CreatePrivateRoomButton";
 import LeavePrivateRoomButton from "./LeavePrivateRoomButton";
 import { User } from "@/models/user";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "sonner";
+import {
+  HybridTooltip,
+  HybridTooltipContent,
+  HybridTooltipTrigger,
+} from "@/components/HybridTooltip";
 
 type Props = {
   roomId?: string;
@@ -148,7 +152,7 @@ const Room = ({ roomId, type }: Props) => {
 
   const handleCopyRoomLink = () => {
     const link = process.env.NEXT_PUBLIC_VERCEL_URL
-      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/rooms/${roomId}`
+      ? `https://${process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}/rooms/${roomId}`
       : `http://${process.env.NEXT_PUBLIC_URL}/rooms/${roomId}`;
     navigator.clipboard.writeText(link);
     toast.success("Room link copied 🎉", {
@@ -165,20 +169,20 @@ const Room = ({ roomId, type }: Props) => {
             {type === "public" ? (
               <div className="flex items-end">
                 <span>Lobby</span>
-                <Tooltip>
-                  <TooltipTrigger className="ml-2">
+                <HybridTooltip>
+                  <HybridTooltipTrigger className="ml-2">
                     <BadgeInfo className="text-gray-500 size-4" />
-                  </TooltipTrigger>
-                  <TooltipContent>
+                  </HybridTooltipTrigger>
+                  <HybridTooltipContent>
                     A shared virtual space where users connected to the same network can discover
                     and see each other
-                  </TooltipContent>
-                </Tooltip>
+                  </HybridTooltipContent>
+                </HybridTooltip>
               </div>
             ) : (
               type === "private" && (
                 <div className="flex items-end">
-                  <span>Lobby</span>
+                  <span>Room</span>
                   <Link
                     className="text-gray-500 size-4 ml-2 cursor-pointer hover:text-gray-700"
                     onClick={handleCopyRoomLink}
