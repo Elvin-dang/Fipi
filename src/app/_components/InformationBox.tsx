@@ -14,7 +14,7 @@ const InformationBox = () => {
         <div className="flex items-center flex-col gap-20">
           <span className="relative flex size-40">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full border-sky-400 bg-sky-400 border opacity-75" />
-            <Link href="/g">
+            <Link href="/g" className="h-full w-full">
               <Avatar className="h-full w-full animate-small-ping cursor-pointer">
                 <AvatarImage src={user.avatar} />
                 <AvatarFallback>...</AvatarFallback>
