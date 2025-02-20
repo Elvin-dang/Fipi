@@ -24,7 +24,7 @@ import {
 } from "firebase/database";
 import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { BadgeInfo, Link, Package } from "lucide-react";
+import { BadgeInfo, Dot, Link, Package } from "lucide-react";
 import { sendMessage } from "@/utils/sendMessage";
 import Spinner from "@/components/Spinner";
 import UserListItem from "./UserListItem";
@@ -38,6 +38,7 @@ import {
   HybridTooltipContent,
   HybridTooltipTrigger,
 } from "@/components/HybridTooltip";
+import { Badge } from "@/components/ui/badge";
 
 type Props = {
   roomId?: string;
@@ -205,7 +206,12 @@ const Room = ({ roomId, type }: Props) => {
             </SettingDrawer>
           </div>
         </CardTitle>
-        <CardDescription>{room.users.length} User(s)</CardDescription>
+        <CardDescription>
+          <Badge variant="outline" className="rounded-2xl pl-1 pr-3">
+            <Dot className="text-green-500" strokeWidth={8} />
+            {room.users.length}
+          </Badge>
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <div>

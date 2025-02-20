@@ -10,7 +10,7 @@ import { User } from "@/models/user";
 import { useGlobalStore } from "@/providers/globalStateProvider";
 import { downloadFile, reduceFiles, toFileSize } from "@/utils/file";
 import { sendMessage } from "@/utils/sendMessage";
-import { Check, FileCheck2, FileX2, Paperclip, Smile, X } from "lucide-react";
+import { Check, CircleCheck, FileCheck2, FileX2, Paperclip, X } from "lucide-react";
 import React, { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import ToastText from "./ToastText";
@@ -25,6 +25,7 @@ type Props = {
 const UserListItem = ({ user, self, roomId }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
+  const [sendingFile, setSendingFile] = useState<File>();
   const [fileInfo, setFileInfo] = useState<{
     name: string;
     type: string;
@@ -102,6 +103,7 @@ const UserListItem = ({ user, self, roomId }: Props) => {
             }
             break;
           case "FILE_COMPLETE":
+            setSendingFile(undefined);
             setFileSendingProgress(0);
             setIsOpen(false);
             break;
@@ -121,6 +123,7 @@ const UserListItem = ({ user, self, roomId }: Props) => {
   const onFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = await reduceFiles(e.target.files, user.id);
+      setSendingFile(file);
 
       let peerConnection = getPeerConnection(user.id);
 
@@ -235,6 +238,7 @@ const UserListItem = ({ user, self, roomId }: Props) => {
           queueData(0);
           break;
         case "REJECT":
+          setSendingFile(undefined);
           setPendingRequest(false);
           setIsOpen(false);
           toast(
@@ -372,7 +376,7 @@ const UserListItem = ({ user, self, roomId }: Props) => {
           </div>
         )}
       </div>
-      <CollapsibleContent>
+      <CollapsibleContent className="mb-2">
         {fileInfo && (
           <Card>
             <CardContent className="p-2">
@@ -410,34 +414,62 @@ const UserListItem = ({ user, self, roomId }: Props) => {
             </CardContent>
           </Card>
         )}
-        {pendingRequest && (
-          <Card className="mt-2">
+        {pendingRequest && sendingFile && (
+          <Card>
             <CardHeader className="p-2">
               <CardTitle>
-                <div className="flex gap-2 justify-between">
+                <div className="flex gap-2 justify-between text-gray-500">
                   Waiting for response <Loader className="h-4 w-4" />
+                </div>
+                <Separator className="my-2" />
+                <div className="flex flex-col gap-2 justify-between flex-1 font-normal">
+                  <h1 className="font-semibold">{sendingFile.name}</h1>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">{sendingFile.type}</span>
+                    <span className="text-sm text-gray-600">{toFileSize(sendingFile.size)}</span>
+                  </div>
                 </div>
               </CardTitle>
             </CardHeader>
           </Card>
         )}
-        {fileSendingProgress !== 0 && (
-          <Card className="mt-2">
+        {fileSendingProgress !== 0 && sendingFile && (
+          <Card>
             <CardHeader className="p-2">
               <CardTitle>
-                <div className="flex gap-2 justify-between">
-                  {fileSendingProgress < 100 ? (
-                    <div className="w-full">
-                      <p className="mb-2">Sending...</p>
-                      <Progress value={fileSendingProgress} />
+                {fileSendingProgress < 100 ? (
+                  <div className="w-full">
+                    <p className="text-gray-500">Sending...</p>
+                    <Separator className="my-2" />
+                    <div className="flex flex-col gap-2 justify-between flex-1 font-normal">
+                      <h1 className="font-semibold">{sendingFile.name}</h1>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-gray-600">{sendingFile.type}</span>
+                        <span className="text-sm text-gray-600">
+                          {toFileSize(sendingFile.size)}
+                        </span>
+                      </div>
                     </div>
-                  ) : (
-                    <div className="flex justify-between items-center w-full">
+                    <Progress value={fileSendingProgress} />
+                  </div>
+                ) : (
+                  <>
+                    <div className="flex justify-between items-center w-full text-gray-500">
                       <p>File sent</p>
-                      <Smile />
+                      <CircleCheck size={16} />
                     </div>
-                  )}
-                </div>
+                    <Separator className="my-2" />
+                    <div className="flex flex-col gap-2 justify-between flex-1 font-normal">
+                      <h1 className="font-semibold">{sendingFile.name}</h1>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-gray-600">{sendingFile.type}</span>
+                        <span className="text-sm text-gray-600">
+                          {toFileSize(sendingFile.size)}
+                        </span>
+                      </div>
+                    </div>
+                  </>
+                )}
               </CardTitle>
             </CardHeader>
           </Card>
