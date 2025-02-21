@@ -87,23 +87,23 @@ export const createGlobalStore = (initState: State = defaultInitState) => {
             },
             {
               urls: "turn:global.relay.metered.ca:80",
-              username: "ac0fd6173dae8286fa6f87a9",
-              credential: "W/v25XK+I47rx8Eh",
+              username: process.env.NEXT_PUBLIC_TURN_SERVER_USERNAME,
+              credential: process.env.NEXT_PUBLIC_TURN_SERVER_CREDENTIAL,
             },
             {
               urls: "turn:global.relay.metered.ca:80?transport=tcp",
-              username: "ac0fd6173dae8286fa6f87a9",
-              credential: "W/v25XK+I47rx8Eh",
+              username: process.env.NEXT_PUBLIC_TURN_SERVER_USERNAME,
+              credential: process.env.NEXT_PUBLIC_TURN_SERVER_CREDENTIAL,
             },
             {
               urls: "turn:global.relay.metered.ca:443",
-              username: "ac0fd6173dae8286fa6f87a9",
-              credential: "W/v25XK+I47rx8Eh",
+              username: process.env.NEXT_PUBLIC_TURN_SERVER_USERNAME,
+              credential: process.env.NEXT_PUBLIC_TURN_SERVER_CREDENTIAL,
             },
             {
               urls: "turns:global.relay.metered.ca:443?transport=tcp",
-              username: "ac0fd6173dae8286fa6f87a9",
-              credential: "W/v25XK+I47rx8Eh",
+              username: process.env.NEXT_PUBLIC_TURN_SERVER_USERNAME,
+              credential: process.env.NEXT_PUBLIC_TURN_SERVER_CREDENTIAL,
             },
           ],
         });
