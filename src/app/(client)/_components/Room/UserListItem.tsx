@@ -20,9 +20,10 @@ type Props = {
   roomId: string;
   user: User;
   self: User;
+  sendAllEvent?: ChangeEvent<HTMLInputElement>;
 };
 
-const UserListItem = ({ user, self, roomId }: Props) => {
+const UserListItem = ({ user, self, roomId, sendAllEvent }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [sendingFile, setSendingFile] = useState<File>();
@@ -57,6 +58,22 @@ const UserListItem = ({ user, self, roomId }: Props) => {
 
   const createPeerConnection = useGlobalStore((state) => state.createPeerConnection);
   const getPeerConnection = useGlobalStore((state) => state.getPeerConnection);
+
+  useEffect(() => {
+    if (
+      user.id !== self.id &&
+      sendAllEvent &&
+      !isOpen &&
+      !sendingFile &&
+      !fileInfo &&
+      !fileSendingProgress &&
+      !fileReceivingProgress &&
+      !pendingRequest &&
+      !pendingRespond
+    ) {
+      onFileChange(sendAllEvent);
+    }
+  }, [sendAllEvent]);
 
   useEffect(() => {
     const asyncTask = async () => {

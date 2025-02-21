@@ -22,7 +22,7 @@ import {
   off,
   remove,
 } from "firebase/database";
-import React, { useEffect } from "react";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { BadgeInfo, Dot, Package } from "lucide-react";
 import { sendMessage } from "@/utils/sendMessage";
@@ -46,6 +46,10 @@ type Props = {
 };
 
 const Room = ({ roomId, type }: Props) => {
+  const [sendAll, setSendAll] = useState<ChangeEvent<HTMLInputElement>>();
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const user = useGlobalStore((state) => state.user);
   const room = useGlobalStore((state) => state.room);
 
@@ -151,6 +155,14 @@ const Room = ({ roomId, type }: Props) => {
     }
   };
 
+  const openChooseFiles = () => {
+    fileInputRef.current?.click();
+  };
+
+  const onFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    setSendAll(e);
+  };
+
   return roomId && room && user ? (
     <Card className="w-[400px] max-w-[100vw] m-auto">
       <CardHeader>
@@ -202,12 +214,13 @@ const Room = ({ roomId, type }: Props) => {
       <CardContent>
         <div>
           {room.users.map((u) => (
-            <UserListItem key={u.id} user={u} self={user} roomId={roomId} />
+            <UserListItem key={u.id} user={u} self={user} roomId={roomId} sendAllEvent={sendAll} />
           ))}
         </div>
       </CardContent>
       <CardFooter>
-        <Button className="w-full">
+        <input type="file" className="hidden" multiple ref={fileInputRef} onChange={onFileChange} />
+        <Button className="w-full" onClick={openChooseFiles}>
           Send to all <Package />
         </Button>
       </CardFooter>
