@@ -25,9 +25,10 @@ type Props = {
 const SharingDrawer = ({ roomId }: Props) => {
   const [open, setOpen] = useState(false);
 
-  const link = process.env.NEXT_PUBLIC_VERCEL_URL
-    ? `https://${process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}/rooms/${roomId}`
-    : `http://${process.env.NEXT_PUBLIC_URL}/rooms/${roomId}`;
+  const link =
+    process.env.NODE_ENV === "production"
+      ? `https://${process.env.NEXT_PUBLIC_URL}/rooms/${roomId}`
+      : `http://${process.env.NEXT_PUBLIC_URL}/rooms/${roomId}`;
 
   const handleCopyRoomLink = () => {
     navigator.clipboard.writeText(link);
