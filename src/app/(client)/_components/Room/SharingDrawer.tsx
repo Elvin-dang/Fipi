@@ -60,6 +60,11 @@ const SharingDrawer = ({ roomId }: Props) => {
       url: `https://twitter.com/intent/tweet?url=${link}`,
     },
     {
+      name: "reddit",
+      label: "Reddit",
+      url: `https://www.reddit.com/submit?url=${link}`,
+    },
+    {
       name: "mailto",
       label: "Mail",
       url: `mailto:?subject=YOUR_SUBJECT&body=${link}`,
@@ -85,6 +90,7 @@ const SharingDrawer = ({ roomId }: Props) => {
                 {socialMedia.map((sm) => (
                   <div key={sm.name} className="flex flex-col items-center gap-2">
                     <SocialIcon
+                      target="_blank"
                       url={sm.url}
                       network={sm.name}
                       label={sm.name}
