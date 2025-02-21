@@ -24,7 +24,7 @@ import {
 } from "firebase/database";
 import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { BadgeInfo, Dot, Link, Package } from "lucide-react";
+import { BadgeInfo, Dot, Package } from "lucide-react";
 import { sendMessage } from "@/utils/sendMessage";
 import Spinner from "@/components/Spinner";
 import UserListItem from "./UserListItem";
@@ -32,13 +32,13 @@ import SettingDrawer from "../Setting/SettingDrawer";
 import CreatePrivateRoomButton from "./CreatePrivateRoomButton";
 import LeavePrivateRoomButton from "./LeavePrivateRoomButton";
 import { User } from "@/models/user";
-import { toast } from "sonner";
 import {
   HybridTooltip,
   HybridTooltipContent,
   HybridTooltipTrigger,
 } from "@/components/HybridTooltip";
 import { Badge } from "@/components/ui/badge";
+import SharingDrawer from "./SharingDrawer";
 
 type Props = {
   roomId?: string;
@@ -151,17 +151,6 @@ const Room = ({ roomId, type }: Props) => {
     }
   };
 
-  const handleCopyRoomLink = () => {
-    const link = process.env.NEXT_PUBLIC_VERCEL_URL
-      ? `https://${process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}/rooms/${roomId}`
-      : `http://${process.env.NEXT_PUBLIC_URL}/rooms/${roomId}`;
-    navigator.clipboard.writeText(link);
-    toast.success("Room link copied 🎉", {
-      position: "bottom-center",
-      duration: 2000,
-    });
-  };
-
   return roomId && room && user ? (
     <Card className="w-[400px] max-w-[100vw] m-auto">
       <CardHeader>
@@ -184,10 +173,7 @@ const Room = ({ roomId, type }: Props) => {
               type === "private" && (
                 <div className="flex items-end">
                   <span>Room</span>
-                  <Link
-                    className="text-gray-500 size-4 ml-2 cursor-pointer hover:text-gray-700"
-                    onClick={handleCopyRoomLink}
-                  />
+                  <SharingDrawer roomId={roomId} />
                 </div>
               )
             )}
