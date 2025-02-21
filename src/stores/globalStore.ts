@@ -81,7 +81,31 @@ export const createGlobalStore = (initState: State = defaultInitState) => {
         if (existedConnection) return existedConnection.connection;
 
         const connection = new RTCPeerConnection({
-          iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+          iceServers: [
+            {
+              urls: "stun:stun.relay.metered.ca:80",
+            },
+            {
+              urls: "turn:global.relay.metered.ca:80",
+              username: "ac0fd6173dae8286fa6f87a9",
+              credential: "W/v25XK+I47rx8Eh",
+            },
+            {
+              urls: "turn:global.relay.metered.ca:80?transport=tcp",
+              username: "ac0fd6173dae8286fa6f87a9",
+              credential: "W/v25XK+I47rx8Eh",
+            },
+            {
+              urls: "turn:global.relay.metered.ca:443",
+              username: "ac0fd6173dae8286fa6f87a9",
+              credential: "W/v25XK+I47rx8Eh",
+            },
+            {
+              urls: "turns:global.relay.metered.ca:443?transport=tcp",
+              username: "ac0fd6173dae8286fa6f87a9",
+              credential: "W/v25XK+I47rx8Eh",
+            },
+          ],
         });
 
         set((state) => ({ connections: [...state.connections, { id, connection }] }));
