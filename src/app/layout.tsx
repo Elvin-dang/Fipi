@@ -9,6 +9,7 @@ import { DrawerCSSProvider } from "@/providers/drawerCSSProvider";
 import { SettingStoreProvider } from "@/providers/settingStoreProvider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { TouchProvider } from "@/components/HybridTooltip";
+import Footer from "./_components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,49 +23,53 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://fipi.live"),
+  keywords: [
+    "P2P file sharing",
+    "Send files online",
+    "Fast file transfer",
+    "Secure file sharing",
+    "Web-based file transfer",
+    "Free file-sharing website",
+    "Best peer-to-peer file-sharing site",
+    "Send large files without login",
+    "No sign-up file transfer",
+    "Fastest way to share files online",
+    "Alternative to Sharedrop",
+    "Private and secure file sharing",
+    "WebRTC file transfer",
+    "Serverless file sharing",
+    "Encrypted peer-to-peer sharing",
+    "Open-source file transfer website",
+    "Direct browser-to-browser file sharing",
+  ],
+  title: {
+    default: "Fipi",
+    template: `%s | Fipi`,
+  },
+  description:
+    "Fast, secure, and private peer-to-peer file-sharing platform. No sign-ups, no cloud storage — just instant file transfers directly between devices using WebRTC.",
+  applicationName: "Fipi | P2P File Sharing",
+  appleWebApp: {
+    title: "Fipi",
+    statusBarStyle: "default",
+    capable: true,
+  },
   openGraph: {
-    title: "Fipi | File Pile - P2P File Sharing",
+    title: "Fipi",
     description:
-      "Fipi is a seamless peer-to-peer file-sharing platform that allows users to transfer files instantly.",
-    siteName: "Fipi | File Pile",
+      "Fast, secure, and private peer-to-peer file-sharing platform. No sign-ups, no cloud storage — just instant file transfers directly between devices using WebRTC.",
+    siteName: "Fipi - P2P File Sharing",
     url: "https://fipi.live",
     type: "website",
     locale: "en_US",
     images: [
       {
-        url: "https://fipi.live/og-image.jpg", // Replace with an actual OG image URL
-        width: 1200,
+        url: "https://fipi.live/og-image.png",
+        width: 630,
         height: 630,
-        alt: "Fipi | Secure P2P File Sharing",
+        alt: "Fipi",
       },
     ],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    "max-image-preview": "large",
-    "max-snippet": -1,
-    "max-video-preview": -1,
-    googleBot: "index, follow",
-  },
-  alternates: {
-    types: {
-      "application/rss+xml": "https://fipi.live/rss.xml",
-    },
-  },
-  applicationName: "Fipi | File Pile",
-  appleWebApp: {
-    title: "Fipi | File Pile",
-    statusBarStyle: "default",
-    capable: true,
-  },
-  verification: {
-    google: "YOUR_DATA",
-    yandex: ["YOUR_DATA"],
-    other: {
-      "msvalidate.01": ["YOUR_DATA"],
-      "facebook-domain-verification": ["YOUR_DATA"],
-    },
   },
   icons: {
     icon: [
@@ -77,7 +82,21 @@ export const metadata: Metadata = {
         sizes: "16x16",
         type: "image/png",
       },
-      // add favicon-32x32.png, favicon-96x96.png, android-chrome-192x192.png
+      {
+        url: "/favicon-32x32.png",
+        sizes: "32x32",
+        type: "image/png",
+      },
+      {
+        url: "/android-chrome-192x192.png",
+        sizes: "192x192",
+        type: "image/png",
+      },
+      {
+        url: "/android-chrome-512x512.png",
+        sizes: "512x512",
+        type: "image/png",
+      },
     ],
     shortcut: [
       {
@@ -87,17 +106,46 @@ export const metadata: Metadata = {
     ],
     apple: [
       {
-        url: "/apple-icon-57x57.png",
-        sizes: "57x57",
+        url: "/apple-touch-icon-57x57.png",
+        sizes: "76x76",
         type: "image/png",
       },
       {
-        url: "/apple-icon-60x60.png",
-        sizes: "60x60",
+        url: "/apple-touch-icon-120x120.png",
+        sizes: "120x120",
         type: "image/png",
       },
-      // add apple-icon-72x72.png, apple-icon-76x76.png, apple-icon-114x114.png, apple-icon-120x120.png, apple-icon-144x144.png, apple-icon-152x152.png, apple-icon-180x180.png
+      {
+        url: "/apple-touch-icon-152x152.png",
+        sizes: "152x152",
+        type: "image/png",
+      },
+
+      {
+        url: "/apple-touch-icon-180x180.png",
+        sizes: "180x180",
+        type: "image/png",
+      },
     ],
+  },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Fipi",
+  url: "https://fipi.live",
+  description:
+    "Fast, secure, and private peer-to-peer file-sharing platform. No sign-ups, no cloud storage — just instant file transfers directly between devices using WebRTC.",
+  applicationCategory: "File Transfer",
+  operatingSystem: "Web",
+  browserRequirements: ["requires HTML5 support", "requires JavaScript"],
+  image: "https://fipi.live/logo.png",
+  offers: {
+    "@type": "Offer",
+    price: "0.00",
+    priceCurrency: "USD",
+    availability: "https://schema.org/InStock",
   },
 };
 
@@ -109,7 +157,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased h-dvh`}
         suppressHydrationWarning={true}
       >
         <ThemeProvider
@@ -126,9 +174,14 @@ export default function RootLayout({
                 </GlobalStoreProvider>
               </TouchProvider>
             </TooltipProvider>
+            <Footer />
           </DrawerCSSProvider>
         </ThemeProvider>
         <Toaster />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
       </body>
     </html>
   );

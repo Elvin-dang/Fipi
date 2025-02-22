@@ -12,9 +12,7 @@ export default function Home() {
   const user = useGlobalStore((state) => state.user);
 
   return user ? (
-    <main className="p-2 h-screen min-h-screen">
-      {/* <h1 className="text-2xl">FiPi - File Sharing</h1> */}
-
+    <main className="h-full">
       <InformationBox />
     </main>
   ) : (
