@@ -47,6 +47,7 @@ type Props = {
 
 const Room = ({ roomId, type }: Props) => {
   const [sendAll, setSendAll] = useState<ChangeEvent<HTMLInputElement>>();
+  const [sendAllTime, setSendAllTime] = useState<number>();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -160,6 +161,7 @@ const Room = ({ roomId, type }: Props) => {
   };
 
   const onFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    setSendAllTime(Date.now());
     setSendAll(e);
   };
 
@@ -214,7 +216,14 @@ const Room = ({ roomId, type }: Props) => {
       <CardContent>
         <div>
           {room.users.map((u) => (
-            <UserListItem key={u.id} user={u} self={user} roomId={roomId} sendAllEvent={sendAll} />
+            <UserListItem
+              key={u.id}
+              user={u}
+              self={user}
+              roomId={roomId}
+              sendAllEvent={sendAll}
+              sendAllTime={sendAllTime}
+            />
           ))}
         </div>
       </CardContent>

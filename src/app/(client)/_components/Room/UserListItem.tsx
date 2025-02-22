@@ -21,9 +21,11 @@ type Props = {
   user: User;
   self: User;
   sendAllEvent?: ChangeEvent<HTMLInputElement>;
+  sendAllTime?: number;
 };
 
-const UserListItem = ({ user, self, roomId, sendAllEvent }: Props) => {
+const UserListItem = ({ user, self, roomId, sendAllEvent, sendAllTime }: Props) => {
+  const joinRoomAt = useRef<number>(Date.now());
   const [isOpen, setIsOpen] = useState(false);
 
   const [sendingFile, setSendingFile] = useState<File>();
@@ -63,6 +65,7 @@ const UserListItem = ({ user, self, roomId, sendAllEvent }: Props) => {
     if (
       user.id !== self.id &&
       sendAllEvent &&
+      sendAllTime &&
       !isOpen &&
       !sendingFile &&
       !fileInfo &&
@@ -71,7 +74,7 @@ const UserListItem = ({ user, self, roomId, sendAllEvent }: Props) => {
       !pendingRequest &&
       !pendingRespond
     ) {
-      onFileChange(sendAllEvent);
+      if (joinRoomAt.current <= sendAllTime) onFileChange(sendAllEvent);
     }
   }, [sendAllEvent]);
 
