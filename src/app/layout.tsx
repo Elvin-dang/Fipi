@@ -46,6 +46,9 @@ export const metadata: Metadata = {
     default: "Fipi",
     template: `%s | Fipi`,
   },
+  verification: {
+    google: "Pl_x0DNj37QqNY2z7TYLAoZRTSPv_ay0qgFIXqZ7X7A",
+  },
   description:
     "Fast, secure, and private peer-to-peer file-sharing platform. No sign-ups, no cloud storage — just instant file transfers directly between devices using WebRTC.",
   applicationName: "Fipi | P2P File Sharing",
