@@ -10,6 +10,7 @@ import { SettingStoreProvider } from "@/providers/settingStoreProvider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { TouchProvider } from "@/components/HybridTooltip";
 import Footer from "./_components/Footer";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -181,6 +182,7 @@ export default function RootLayout({
           </DrawerCSSProvider>
         </ThemeProvider>
         <Toaster />
+        <SpeedInsights />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
