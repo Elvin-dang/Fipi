@@ -51,9 +51,12 @@ export const initGlobalStore = async (): Promise<State> => {
 
 export const defaultInitState: State = { connections: [] };
 
+export const devtoolsInNonProd =
+  process.env.NODE_ENV === "production" ? (((fn) => fn) as typeof devtools) : devtools;
+
 export const createGlobalStore = (initState: State = defaultInitState) => {
   return createStore<GlobalStore>()(
-    devtools((set, get) => ({
+    devtoolsInNonProd((set, get) => ({
       ...initState,
       // Room
       newRoom: (roomId: string) => set(() => ({ room: { id: roomId, users: [] } })),

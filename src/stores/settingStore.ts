@@ -1,5 +1,6 @@
 import { createStore } from "zustand/vanilla";
-import { devtools, persist } from "zustand/middleware";
+import { persist } from "zustand/middleware";
+import { devtoolsInNonProd } from "./globalStore";
 
 export type State = {
   autoSave: boolean | "indeterminate";
@@ -20,7 +21,7 @@ export const defaultInitState: State = { autoSave: false };
 
 export const createSettingStore = (initState: State = defaultInitState) => {
   return createStore<SettingStore>()(
-    devtools(
+    devtoolsInNonProd(
       persist(
         (set, get) => ({
           ...initState,
