@@ -42,12 +42,22 @@ export default {
           "25%": { backgroundPosition: "-200% 0" },
           "100%": { backgroundPosition: "-200% 0" },
         },
+        wiggle: {
+          "0%": {},
+          "100%": {
+            transform: "rotate(-6deg)",
+          },
+          "50%": {
+            transform: "rotate(6deg)",
+          },
+        },
       },
       animation: {
         "small-ping": "smallPing 1s cubic-bezier(0, 0, 0.2, 1) infinite",
         typewriter: "typewriter 2s steps(11) forwards",
         caret: "typewriter 2s steps(11) forwards, blink 1s steps(11) infinite 2s",
         shine: "shine 3s ease-out infinite",
+        wiggle: "wiggle 0.5s ease-in-out infinite",
       },
       colors: {
         tertiary: "var(--tertiary)",
