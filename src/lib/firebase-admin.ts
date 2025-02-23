@@ -1,7 +1,7 @@
 import admin from "firebase-admin";
 
 if (!admin.apps.length) {
-  var serviceAccount = JSON.parse(
+  const serviceAccount = JSON.parse(
     // @ts-expect-error there is always a SERVICE_ACCOUNT
     Buffer.from(process.env.SERVICE_ACCOUNT, "base64").toString("utf8")
   );
