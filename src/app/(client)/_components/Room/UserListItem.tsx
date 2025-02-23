@@ -401,8 +401,10 @@ const UserListItem = ({ user, self, roomId, sendAllEvent, sendAllTime }: Props) 
           <Card>
             <CardContent className="p-2">
               <div className="flex gap-2 justify-between">
-                <div className="flex flex-col gap-2 justify-between flex-1">
-                  <h1 className="font-semibold">{fileInfo.name}</h1>
+                <div className="flex flex-col gap-2 justify-between">
+                  <h1 className="font-semibold break-words whitespace-normal break-all">
+                    {fileInfo.name}
+                  </h1>
                   <div className="flex justify-between">
                     <span className="text-sm text-gray-600">{fileInfo.type}</span>
                     <span className="text-sm text-gray-600">{toFileSize(fileInfo.size)}</span>
@@ -443,7 +445,9 @@ const UserListItem = ({ user, self, roomId, sendAllEvent, sendAllTime }: Props) 
                 </div>
                 <Separator className="my-2" />
                 <div className="flex flex-col gap-2 justify-between flex-1 font-normal">
-                  <h1 className="font-semibold">{sendingFile.name}</h1>
+                  <h1 className="font-semibold break-words whitespace-normal">
+                    {sendingFile.name}
+                  </h1>
                   <div className="flex justify-between">
                     <span className="text-sm text-gray-600">{sendingFile.type}</span>
                     <span className="text-sm text-gray-600">{toFileSize(sendingFile.size)}</span>
@@ -462,7 +466,9 @@ const UserListItem = ({ user, self, roomId, sendAllEvent, sendAllTime }: Props) 
                     <p className="text-gray-500">Sending...</p>
                     <Separator className="my-2" />
                     <div className="flex flex-col gap-2 justify-between flex-1 font-normal">
-                      <h1 className="font-semibold">{sendingFile.name}</h1>
+                      <h1 className="font-semibold break-words whitespace-normal">
+                        {sendingFile.name}
+                      </h1>
                       <div className="flex justify-between">
                         <span className="text-sm text-gray-600">{sendingFile.type}</span>
                         <span className="text-sm text-gray-600">
@@ -480,7 +486,9 @@ const UserListItem = ({ user, self, roomId, sendAllEvent, sendAllTime }: Props) 
                     </div>
                     <Separator className="my-2" />
                     <div className="flex flex-col gap-2 justify-between flex-1 font-normal">
-                      <h1 className="font-semibold">{sendingFile.name}</h1>
+                      <h1 className="font-semibold break-words whitespace-normal">
+                        {sendingFile.name}
+                      </h1>
                       <div className="flex justify-between">
                         <span className="text-sm text-gray-600">{sendingFile.type}</span>
                         <span className="text-sm text-gray-600">

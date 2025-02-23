@@ -183,7 +183,7 @@ export default function RootLayout({
             <Footer />
           </DrawerCSSProvider>
         </ThemeProvider>
-        <Toaster />
+        <Toaster offset={{ bottom: "60px" }} mobileOffset={{ bottom: "60px" }} />
         <SpeedInsights />
         <script
           type="application/ld+json"
