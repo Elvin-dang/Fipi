@@ -25,6 +25,8 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://fipi.live"),
   keywords: [
+    "Fipi",
+    "File pile",
     "P2P file sharing",
     "Send files online",
     "Fast file transfer",

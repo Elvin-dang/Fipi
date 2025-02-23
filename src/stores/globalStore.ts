@@ -5,10 +5,11 @@ import { User } from "@/models/user";
 import Avatar from "@/utils/avatar";
 import { createStore } from "zustand/vanilla";
 import { devtools } from "zustand/middleware";
+import { signInWithCustomToken } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
 export type State = {
   publicIP?: string;
-  token?: string;
   user?: User;
   room?: Room;
   message?: Message;
@@ -34,8 +35,10 @@ export type GlobalStore = State & Actions;
 export const initGlobalStore = async (): Promise<State> => {
   const { name, avatar } = Avatar();
 
-  const auth = await fetch("/auth");
-  const { id, public_ip, token } = await auth.json();
+  const authRq = await fetch("/auth");
+  const { id, public_ip, token } = await authRq.json();
+
+  await signInWithCustomToken(auth, token);
 
   const user: User = {
     id,
@@ -43,7 +46,7 @@ export const initGlobalStore = async (): Promise<State> => {
     avatar,
   };
 
-  return { user, connections: [], publicIP: public_ip, token };
+  return { user, connections: [], publicIP: public_ip };
 };
 
 export const defaultInitState: State = { connections: [] };
