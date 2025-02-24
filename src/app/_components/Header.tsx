@@ -7,6 +7,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -16,6 +17,7 @@ import {
   Drawer,
   DrawerContent,
   DrawerDescription,
+  DrawerFooter,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
@@ -250,6 +252,18 @@ const Header = () => {
             <DialogDescription></DialogDescription>
           </DialogHeader>
           <MainContent />
+          <DialogFooter className="text-xs italic text-foreground">
+            *Devices need to have the same&nbsp;
+            <a
+              href="https://www.google.com/search?q=what+is+my+ip"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-purple-500"
+            >
+              public IP
+            </a>
+            &nbsp; to see each other.
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     );
@@ -270,6 +284,18 @@ const Header = () => {
             <DrawerDescription></DrawerDescription>
           </DrawerHeader>
           <MainContent className="px-4 overflow-y-auto" />
+          <DrawerFooter className="text-xs italic text-foreground text-right">
+            *Devices need to have the same&nbsp;
+            <a
+              href="https://www.google.com/search?q=what+is+my+ip"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-purple-500 contents"
+            >
+              public IP
+            </a>
+            &nbsp; to see each other.
+          </DrawerFooter>
         </DrawerContent>
       </Drawer>
     );
