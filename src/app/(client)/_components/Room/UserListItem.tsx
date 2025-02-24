@@ -15,6 +15,7 @@ import React, { ChangeEvent, useCallback, useEffect, useRef, useState } from "re
 import { toast } from "sonner";
 import ToastText from "./ToastText";
 import { useSettingStore } from "@/providers/settingStoreProvider";
+import { Badge } from "@/components/ui/badge";
 
 type Props = {
   roomId: string;
@@ -375,15 +376,17 @@ const UserListItem = ({ user, self, roomId, sendAllEvent, sendAllTime }: Props) 
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-      <div className="flex items-center gap-2 justify-between py-2">
+      <div
+        className="flex items-center gap-2 justify-between py-2"
+        id={self.id === user.id ? "t-self" : undefined}
+      >
         <div className="flex items-center gap-2">
           <Avatar>
             <AvatarImage src={user.avatar} />
             <AvatarFallback>...</AvatarFallback>
           </Avatar>
-          <p className="font-medium">
-            {user.name} {self.id === user.id && <span className="font-semibold">(You)</span>}
-          </p>
+          <p className="font-medium">{user.name}</p>
+          {self.id === user.id && <Badge variant="outline">You</Badge>}
         </div>
         {self.id !== user.id && !isOpen && (
           <div>

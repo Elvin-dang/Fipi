@@ -20,9 +20,10 @@ import { SocialIcon } from "react-social-icons";
 
 type Props = {
   roomId: string;
+  id: string;
 };
 
-const SharingDrawer = ({ roomId }: Props) => {
+const SharingDrawer = ({ roomId, id }: Props) => {
   const [open, setOpen] = useState(false);
 
   const link =
@@ -75,7 +76,7 @@ const SharingDrawer = ({ roomId }: Props) => {
   return (
     <Drawer open={open} onOpenChange={setOpen} repositionInputs={false}>
       <DrawerTrigger asChild>
-        <Link className="text-gray-500 size-4 ml-2 cursor-pointer hover:text-gray-700" />
+        <Link className="text-gray-500 size-4 ml-2 cursor-pointer hover:text-gray-700" id={id} />
       </DrawerTrigger>
       <DrawerContent>
         <div className="mx-auto w-full max-w-sm">

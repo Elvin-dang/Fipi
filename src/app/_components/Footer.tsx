@@ -47,6 +47,7 @@ const Footer = () => {
             width={20}
             height={20}
             className="dark:hidden block"
+            priority
           />
           <Image
             src="/assets/images/github-dark.svg"
@@ -54,6 +55,7 @@ const Footer = () => {
             width={20}
             height={20}
             className="dark:block hidden"
+            priority
           />
         </Link>
       </div>

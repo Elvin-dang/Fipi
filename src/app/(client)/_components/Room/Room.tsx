@@ -171,7 +171,7 @@ const Room = ({ roomId, type }: Props) => {
         <CardTitle>
           <div className="flex items-center justify-between">
             {type === "public" ? (
-              <div className="flex items-end">
+              <div className="flex items-end" id="t-21">
                 <span>Lobby</span>
                 <HybridTooltip>
                   <HybridTooltipTrigger className="ml-2">
@@ -185,13 +185,13 @@ const Room = ({ roomId, type }: Props) => {
               </div>
             ) : (
               type === "private" && (
-                <div className="flex items-end">
-                  <span>Room</span>
-                  <SharingDrawer roomId={roomId} />
+                <div className="flex items-end gap-2">
+                  <span id="t-31">Room</span>
+                  <SharingDrawer roomId={roomId} id="t-32" />
                 </div>
               )
             )}
-            <SettingDrawer>
+            <SettingDrawer id="t-setting">
               {type === "public" ? (
                 <>
                   <CreatePrivateRoomButton leaveRoom={leaveRoom} user={user} />
@@ -207,7 +207,7 @@ const Room = ({ roomId, type }: Props) => {
           </div>
         </CardTitle>
         <CardDescription>
-          <Badge variant="outline" className="rounded-2xl pl-1 pr-3">
+          <Badge variant="outline" className="rounded-2xl pl-1 pr-3" id="t-num-user">
             <Dot className="text-green-500" strokeWidth={8} />
             {room.users.length}
           </Badge>
@@ -229,7 +229,7 @@ const Room = ({ roomId, type }: Props) => {
       </CardContent>
       <CardFooter>
         <input type="file" className="hidden" multiple ref={fileInputRef} onChange={onFileChange} />
-        <Button className="w-full" onClick={openChooseFiles}>
+        <Button className="w-full" onClick={openChooseFiles} id="t-send-all">
           Send to all <Package />
         </Button>
       </CardFooter>

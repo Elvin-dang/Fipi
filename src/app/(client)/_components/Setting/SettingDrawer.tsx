@@ -19,15 +19,16 @@ import React, { ReactNode } from "react";
 
 type Props = {
   children?: ReactNode;
+  id: string;
 };
 
-const SettingDrawer = ({ children }: Props) => {
+const SettingDrawer = ({ children, id }: Props) => {
   const { autoSave, setAutoSave } = useSettingStore((state) => state);
 
   return (
     <Drawer>
       <DrawerTrigger asChild>
-        <Button variant="outline" size="icon">
+        <Button variant="outline" size="icon" id={id}>
           <Settings />
         </Button>
       </DrawerTrigger>

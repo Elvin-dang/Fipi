@@ -11,6 +11,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { TouchProvider } from "@/components/HybridTooltip";
 import Footer from "./_components/Footer";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import Header from "./_components/Header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -176,13 +177,16 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <DrawerCSSProvider>
-            <TooltipProvider delayDuration={200}>
-              <TouchProvider>
-                <GlobalStoreProvider>
-                  <SettingStoreProvider>{children}</SettingStoreProvider>
-                </GlobalStoreProvider>
-              </TouchProvider>
-            </TooltipProvider>
+            <Header />
+            <div className="h-full">
+              <TooltipProvider delayDuration={200}>
+                <TouchProvider>
+                  <GlobalStoreProvider>
+                    <SettingStoreProvider>{children}</SettingStoreProvider>
+                  </GlobalStoreProvider>
+                </TouchProvider>
+              </TooltipProvider>
+            </div>
             <Footer />
           </DrawerCSSProvider>
         </ThemeProvider>
