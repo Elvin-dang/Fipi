@@ -71,7 +71,7 @@ export const metadata: Metadata = {
     images: [
       {
         url: "https://fipi.live/og-image.png",
-        width: 630,
+        width: 1200,
         height: 630,
         alt: "Fipi",
       },
