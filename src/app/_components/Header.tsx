@@ -176,9 +176,9 @@ const setting3: Config = {
     {
       element: "#t-31",
       popover: {
-        title: "Lobby",
+        title: "Room",
         description:
-          "A shared virtual space where users connected to the same network can discover and see each other.",
+          "A unique virtual space where users can securely share files with others, even if they are on different networks.",
         side: "bottom",
         align: "center",
       },
