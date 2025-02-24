@@ -401,7 +401,7 @@ const UserListItem = ({ user, self, roomId, sendAllEvent, sendAllTime }: Props) 
           <Card>
             <CardContent className="p-2">
               <div className="flex gap-2 justify-between">
-                <div className="flex flex-col gap-2 justify-between">
+                <div className="flex flex-col gap-2 justify-between flex-1">
                   <h1 className="font-semibold break-words whitespace-normal break-all">
                     {fileInfo.name}
                   </h1>
