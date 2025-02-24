@@ -326,7 +326,11 @@ const UserListItem = ({ user, self, roomId, sendAllEvent, sendAllTime }: Props) 
             resetState();
           };
 
-          if (fileInfoRef.current) {
+          if (
+            fileInfoRef.current &&
+            receivedChunks.current.length * fileInfoRef.current.chunkSize >=
+              fileInfoRef.current.size
+          ) {
             setFileReceivingProgress(100);
             const receivedBlob = new Blob(receivedChunks.current);
             if (getAutoSave()) {
