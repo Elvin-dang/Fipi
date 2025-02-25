@@ -1,24 +1,13 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Room from "../_components/Room/Room";
 
 export const dynamic = "force-dynamic";
 
-const Page = () => {
-  const [roomId, setRoomId] = useState<string>();
+const Page = async () => {
+  const data = await fetch(`http://localhost:3000/room`);
+  const jsonData = await data.json();
 
-  useEffect(() => {
-    const asyncTask = async () => {
-      const data = await fetch(`/room`);
-      const jsonData = await data.json();
-
-      if (jsonData.name) setRoomId(jsonData.name);
-    };
-    asyncTask();
-  }, []);
-
-  return <Room roomId={roomId} type="public" />;
+  return <Room roomId={jsonData.name} type="public" />;
 };
 
 export default Page;

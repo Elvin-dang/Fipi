@@ -4,6 +4,7 @@ import { type ReactNode, createContext, useRef, useContext, useEffect, useState 
 import { useStore } from "zustand";
 
 import { type GlobalStore, createGlobalStore, initGlobalStore } from "@/stores/globalStore";
+import Spinner from "@/components/Spinner";
 
 export type GlobalStoreApi = ReturnType<typeof createGlobalStore>;
 
@@ -25,11 +26,10 @@ export const GlobalStoreProvider = ({ children }: GlobalStoreProviderProps) => {
     fetchInitGlobalState();
   }, []);
 
-  return (
-    !isFetching &&
-    storeRef.current && (
-      <GlobalStoreContext.Provider value={storeRef.current}>{children}</GlobalStoreContext.Provider>
-    )
+  return !isFetching && storeRef.current ? (
+    <GlobalStoreContext.Provider value={storeRef.current}>{children}</GlobalStoreContext.Provider>
+  ) : (
+    <Spinner />
   );
 };
 

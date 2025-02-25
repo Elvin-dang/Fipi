@@ -1,6 +1,5 @@
 import { Message } from "@/models/message";
 import { Peer } from "@/models/peer";
-import { Room } from "@/models/room";
 import { User } from "@/models/user";
 import Avatar from "@/utils/avatar";
 import { createStore } from "zustand/vanilla";
@@ -10,19 +9,12 @@ import { auth } from "@/lib/firebase";
 
 export type State = {
   publicIP?: string;
-  user?: User;
-  room?: Room;
+  user: User;
   message?: Message;
   connections: Peer[];
 };
 
 export type Actions = {
-  newRoom: (roomId: string) => void;
-  getRoom: () => Room | undefined;
-  addNewUserToRoom: (user: User) => void;
-  removeUserFromRoom: (user: User) => void;
-  clearRoom: () => void;
-
   setMessage: (message: Message) => void;
 
   createPeerConnection: (id: string) => RTCPeerConnection;
@@ -49,33 +41,13 @@ export const initGlobalStore = async (): Promise<State> => {
   return { user, connections: [], publicIP: public_ip };
 };
 
-export const defaultInitState: State = { connections: [] };
-
 export const devtoolsInNonProd =
   process.env.NODE_ENV === "production" ? (((fn) => fn) as typeof devtools) : devtools;
 
-export const createGlobalStore = (initState: State = defaultInitState) => {
+export const createGlobalStore = (initState: State) => {
   return createStore<GlobalStore>()(
     devtoolsInNonProd((set, get) => ({
       ...initState,
-      // Room
-      newRoom: (roomId: string) => set(() => ({ room: { id: roomId, users: [] } })),
-      getRoom: () => {
-        return get().room;
-      },
-      addNewUserToRoom: (user: User) => {
-        const room = get().room;
-        if (room && !room.users.find((u) => u.id === user.id)) {
-          set(() => ({ room: { ...room, users: [...room.users, user] } }));
-        }
-      },
-      removeUserFromRoom: (user: User) => {
-        const room = get().room;
-        if (room && room.users.find((u) => u.id === user.id)) {
-          set(() => ({ room: { ...room, users: room.users.filter((u) => u.id !== user.id) } }));
-        }
-      },
-      clearRoom: () => set(() => ({ room: undefined })),
       // Message
       setMessage: (message: Message) => {
         set(() => ({ message }));

@@ -25,8 +25,6 @@ import {
 import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { BadgeInfo, Dot, Package } from "lucide-react";
-import { sendMessage } from "@/utils/sendMessage";
-import Spinner from "@/components/Spinner";
 import UserListItem from "./UserListItem";
 import SettingDrawer from "../Setting/SettingDrawer";
 import CreatePrivateRoomButton from "./CreatePrivateRoomButton";
@@ -41,7 +39,7 @@ import { Badge } from "@/components/ui/badge";
 import SharingDrawer from "./SharingDrawer";
 
 type Props = {
-  roomId?: string;
+  roomId: string;
   type: "private" | "public";
 };
 
@@ -52,85 +50,75 @@ const Room = ({ roomId, type }: Props) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const user = useGlobalStore((state) => state.user);
-  const room = useGlobalStore((state) => state.room);
-
-  const newRoom = useGlobalStore((state) => state.newRoom);
-  const getRoom = useGlobalStore((state) => state.getRoom);
-  const addNewUserToRoom = useGlobalStore((state) => state.addNewUserToRoom);
-  const removeUserFromRoom = useGlobalStore((state) => state.removeUserFromRoom);
-  const clearRoom = useGlobalStore((state) => state.clearRoom);
+  const [users, setUsers] = useState<User[]>([]);
 
   const setMessage = useGlobalStore((state) => state.setMessage);
 
   const removePeerConnection = useGlobalStore((state) => state.removePeerConnection);
 
   useEffect(() => {
-    if (user && roomId) {
-      const dbRef = ref(db);
-      const connectedRef = child(dbRef, ".info/connected");
-      const roomRef = child(dbRef, `rooms/${roomId}`);
-      const usersRef = child(roomRef, "users");
-      const userRef = child(usersRef, user.id);
+    const dbRef = ref(db);
+    const connectedRef = child(dbRef, ".info/connected");
+    const roomRef = child(dbRef, `rooms/${roomId}`);
+    const usersRef = child(roomRef, "users");
+    const userRef = child(usersRef, user.id);
 
-      const messagesRef = child(dbRef, `rooms/${roomId}/messages`);
-      const receivedMessagesRef = child(messagesRef, user.id);
+    const messagesRef = child(dbRef, `rooms/${roomId}/messages`);
+    const receivedMessagesRef = child(messagesRef, user.id);
 
-      console.log("Room:\t Connecting to: ", roomId);
+    console.log("Room:\t Connecting to: ", roomId);
 
-      onValue(connectedRef, (snapshot) => {
-        if (snapshot.val() === true) {
-          if (!room) newRoom(roomId);
-          console.log("Firebase: (Re)Connected");
+    onValue(connectedRef, (snapshot) => {
+      if (snapshot.val() === true) {
+        console.log("Firebase: (Re)Connected");
 
-          onDisconnect(userRef).remove();
-          onDisconnect(receivedMessagesRef).remove();
+        onDisconnect(userRef).remove();
+        onDisconnect(receivedMessagesRef).remove();
 
-          set(userRef, user)
-            .then(() => {
-              console.log("Firebase: User added to the room");
-            })
-            .catch((error) => {
-              console.warn("Firebase: Adding user to the room failed: ", error);
-            });
-
-          // Room section
-          onChildAdded(usersRef, (snapshot) => {
-            const addedUser = snapshot.val();
-            addNewUserToRoom(addedUser);
-            console.log("Room:\t user_added: ", addedUser);
+        set(userRef, user)
+          .then(() => {
+            console.log("Firebase: User added to the room");
+          })
+          .catch((error) => {
+            console.warn("Firebase: Adding user to the room failed: ", error);
           });
 
-          onChildRemoved(
-            usersRef,
-            (snapshot) => {
-              const removedUser = snapshot.val();
-              removeUserFromRoom(removedUser);
-              removePeerConnection(removedUser.id);
-              console.log("Room:\t user_removed: ", removedUser);
-            },
-            () => {
-              // Handle case when the whole room is removed from Firebase
-            }
-          );
+        // Room section
+        onChildAdded(usersRef, (snapshot) => {
+          const addedUser = snapshot.val();
+          setUsers((users) => [...users, addedUser]);
+          console.log("Room:\t user_added: ", addedUser);
+        });
 
-          onChildChanged(usersRef, (snapshot) => {
-            const changedUser = snapshot.val();
-            console.log("Room:\t user_changed: ", changedUser);
-          });
+        onChildRemoved(
+          usersRef,
+          (snapshot) => {
+            const removedUser = snapshot.val();
+            setUsers((users) => users.filter((u) => u.id !== removedUser.id));
+            removePeerConnection(removedUser.id);
+            console.log("Room:\t user_removed: ", removedUser);
+          },
+          () => {
+            // Handle case when the whole room is removed from Firebase
+          }
+        );
 
-          // Message section
-          onChildAdded(receivedMessagesRef, (snapshot) => {
-            const addedMessage = snapshot.val();
-            setMessage(addedMessage);
-          });
-        } else {
-          console.log("Firebase: Disconnected");
+        onChildChanged(usersRef, (snapshot) => {
+          const changedUser = snapshot.val();
+          console.log("Room:\t user_changed: ", changedUser);
+        });
 
-          leaveRoom(user);
-        }
-      });
-    }
-  }, [user, roomId]);
+        onChildAdded(receivedMessagesRef, (snapshot) => {
+          const addedMessage = snapshot.val();
+          setMessage(addedMessage);
+        });
+      } else {
+        console.log("Firebase: Disconnected");
+
+        leaveRoom(user);
+      }
+    });
+  }, []);
 
   const leaveRoom = (user: User) => {
     const dbRef = ref(db);
@@ -141,19 +129,11 @@ const Room = ({ roomId, type }: Props) => {
     const messagesRef = child(dbRef, `rooms/${roomId}/messages`);
     const receivedMessagesRef = child(messagesRef, user.id);
 
-    const room = getRoom();
+    remove(userRef);
+    remove(receivedMessagesRef);
 
-    if (room) {
-      room.users.forEach((u) => sendMessage("LEAVE", room.id, user.id, u.id, {}));
-
-      remove(userRef);
-      remove(receivedMessagesRef);
-
-      off(usersRef);
-      off(receivedMessagesRef);
-
-      clearRoom();
-    }
+    off(usersRef);
+    off(receivedMessagesRef);
   };
 
   const openChooseFiles = () => {
@@ -165,7 +145,7 @@ const Room = ({ roomId, type }: Props) => {
     setSendAll(e);
   };
 
-  return roomId && room && user ? (
+  return (
     <Card className="w-[400px] max-w-[calc(100vw-32px)] m-auto">
       <CardHeader>
         <CardTitle>
@@ -209,13 +189,13 @@ const Room = ({ roomId, type }: Props) => {
         <CardDescription>
           <Badge variant="outline" className="rounded-2xl pl-1 pr-3" id="t-num-user">
             <Dot className="text-green-500" strokeWidth={8} />
-            {room.users.length}
+            {users.length}
           </Badge>
         </CardDescription>
       </CardHeader>
       <CardContent>
         <div>
-          {room.users.map((u) => (
+          {users.map((u) => (
             <UserListItem
               key={u.id}
               user={u}
@@ -234,8 +214,6 @@ const Room = ({ roomId, type }: Props) => {
         </Button>
       </CardFooter>
     </Card>
-  ) : (
-    <Spinner />
   );
 };
 
