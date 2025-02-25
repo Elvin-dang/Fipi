@@ -1,8 +1,6 @@
 import React from "react";
 import Room from "../_components/Room/Room";
 
-export const dynamic = "force-dynamic";
-
 const Page = async () => {
   const url =
     process.env.NODE_ENV === "production"
