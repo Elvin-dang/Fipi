@@ -8,7 +8,7 @@ const Page = async () => {
     process.env.NODE_ENV === "production"
       ? `https://${process.env.NEXT_PUBLIC_URL}/room`
       : `http://${process.env.NEXT_PUBLIC_URL}/room`;
-  const data = await fetch(url);
+  const data = await fetch(url, { cache: "no-store" });
   const jsonData = await data.json();
 
   return <Room roomId={jsonData.name} type="public" />;
