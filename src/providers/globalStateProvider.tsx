@@ -5,6 +5,8 @@ import { useStore } from "zustand";
 
 import { type GlobalStore, createGlobalStore, initGlobalStore } from "@/stores/globalStore";
 import Spinner from "@/components/Spinner";
+import { signInWithCustomToken } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
 export type GlobalStoreApi = ReturnType<typeof createGlobalStore>;
 
@@ -12,21 +14,29 @@ export const GlobalStoreContext = createContext<GlobalStoreApi | undefined>(unde
 
 export interface GlobalStoreProviderProps {
   children: ReactNode;
+  data: {
+    id: string;
+    token: string;
+  };
 }
 
-export const GlobalStoreProvider = ({ children }: GlobalStoreProviderProps) => {
+export const GlobalStoreProvider = ({ children, data }: GlobalStoreProviderProps) => {
+  const [isAuth, setIsAuth] = useState(false);
   const storeRef = useRef<GlobalStoreApi>(null);
-  const [isFetching, setIsFetching] = useState(true);
 
   useEffect(() => {
-    const fetchInitGlobalState = async () => {
-      storeRef.current = createGlobalStore(await initGlobalStore());
-      setIsFetching(false);
+    const asyncTask = async () => {
+      await signInWithCustomToken(auth, data.token);
+      setIsAuth(true);
     };
-    fetchInitGlobalState();
+    asyncTask();
   }, []);
 
-  return !isFetching && storeRef.current ? (
+  if (!storeRef.current) {
+    storeRef.current = createGlobalStore(initGlobalStore(data.id));
+  }
+
+  return isAuth ? (
     <GlobalStoreContext.Provider value={storeRef.current}>{children}</GlobalStoreContext.Provider>
   ) : (
     <Spinner />

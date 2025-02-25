@@ -12,6 +12,8 @@ import { TouchProvider } from "@/components/HybridTooltip";
 import Footer from "./_components/Footer";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import Header from "./_components/Header";
+import { v4 } from "uuid";
+import { admin } from "@/lib/firebase-admin";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -159,11 +161,14 @@ const jsonLd = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const uid = v4();
+  const token = await admin.auth().createCustomToken(uid, { id: uid });
+
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <body
@@ -181,7 +186,7 @@ export default function RootLayout({
             <div className="h-full">
               <TooltipProvider delayDuration={200}>
                 <TouchProvider>
-                  <GlobalStoreProvider>
+                  <GlobalStoreProvider data={{ id: uid, token }}>
                     <SettingStoreProvider>{children}</SettingStoreProvider>
                   </GlobalStoreProvider>
                 </TouchProvider>
