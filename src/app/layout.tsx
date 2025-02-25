@@ -15,6 +15,8 @@ import Header from "./_components/Header";
 import { v4 } from "uuid";
 import { admin } from "@/lib/firebase-admin";
 
+export const dynamic = "force-dynamic";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
