@@ -15,7 +15,7 @@ const InformationBox = () => {
           <span className="absolute inline-flex h-full w-full animate-ping rounded-full border-sky-400 bg-sky-400 border opacity-75" />
           <Link href="/g" className="h-full w-full" replace>
             <Avatar className="h-full w-full animate-small-ping cursor-pointer">
-              <AvatarImage src={user.avatar} alt={user.avatar} id="t-11" />
+              <AvatarImage src={user.avatar} alt={user.name} id="t-11" />
               <AvatarFallback>...</AvatarFallback>
             </Avatar>
           </Link>
