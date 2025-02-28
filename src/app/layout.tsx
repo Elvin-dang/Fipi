@@ -29,6 +29,9 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://fipi.live"),
+  alternates: {
+    canonical: "/",
+  },
   keywords: [
     "Fipi",
     "File pile",
@@ -88,10 +91,6 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: "/favicon.ico",
-        type: "image/x-icon",
-      },
-      {
         url: "/favicon-16x16.png",
         sizes: "16x16",
         type: "image/png",
@@ -99,6 +98,16 @@ export const metadata: Metadata = {
       {
         url: "/favicon-32x32.png",
         sizes: "32x32",
+        type: "image/png",
+      },
+      {
+        url: "/favicon-96x96.png",
+        sizes: "96x96",
+        type: "image/png",
+      },
+      {
+        url: "/favicon-144x144.png",
+        sizes: "144x144",
         type: "image/png",
       },
       {
@@ -112,15 +121,9 @@ export const metadata: Metadata = {
         type: "image/png",
       },
     ],
-    shortcut: [
-      {
-        url: "/favicon.ico",
-        type: "image/x-icon",
-      },
-    ],
     apple: [
       {
-        url: "/apple-touch-icon-57x57.png",
+        url: "/apple-touch-icon-76x76.png",
         sizes: "76x76",
         type: "image/png",
       },
