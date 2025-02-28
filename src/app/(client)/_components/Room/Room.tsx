@@ -108,6 +108,7 @@ const Room = ({ roomId, type }: Props) => {
           console.log("Room:\t user_changed: ", changedUser);
         });
 
+        // Message section
         onChildAdded(receivedMessagesRef, (snapshot) => {
           const addedMessage = snapshot.val();
           setMessage(addedMessage);
@@ -115,7 +116,8 @@ const Room = ({ roomId, type }: Props) => {
       } else {
         console.log("Firebase: Disconnected");
 
-        leaveRoom(user);
+        off(usersRef);
+        off(receivedMessagesRef);
       }
     });
   }, []);
@@ -193,7 +195,7 @@ const Room = ({ roomId, type }: Props) => {
           </Badge>
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="overflow-auto max-h-[calc(100dvh-290px)]">
         <div>
           {users.map((u) => (
             <UserListItem
