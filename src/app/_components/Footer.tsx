@@ -36,8 +36,8 @@ const Footer = () => {
             className="animate-wiggle hover:animate-none dark:block hidden"
           />
         </Link>
-        {/* <Link
-          href="https://github.com/Elvin-dang"
+        <Link
+          href="https://github.com/Elvin-dang/Fipi"
           target="_blank"
           className="hover:opacity-100 opacity-70"
         >
@@ -57,7 +57,7 @@ const Footer = () => {
             className="dark:block hidden"
             priority
           />
-        </Link> */}
+        </Link>
       </div>
     </motion.div>
   );
