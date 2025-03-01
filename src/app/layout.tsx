@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   },
   keywords: [
     "Fipi",
-    "File pile",
+    "File pipe",
     "P2P file sharing",
     "Send files online",
     "Fast file transfer",
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     "Direct browser-to-browser file sharing",
   ],
   title: {
-    default: "Fipi",
+    default: "Fipi - File Pipe",
     template: `%s | Fipi`,
   },
   verification: {
@@ -62,17 +62,17 @@ export const metadata: Metadata = {
   },
   description:
     "Fast, secure, and private peer-to-peer file-sharing platform. No sign-ups, no cloud storage — just instant file transfers directly between devices using WebRTC.",
-  applicationName: "Fipi | P2P File Sharing",
+  applicationName: "Fipi",
   appleWebApp: {
     title: "Fipi",
     statusBarStyle: "default",
     capable: true,
   },
   openGraph: {
-    title: "Fipi",
+    title: "Fipi - File Pipe",
     description:
       "Fast, secure, and private peer-to-peer file-sharing platform. No sign-ups, no cloud storage — just instant file transfers directly between devices using WebRTC.",
-    siteName: "Fipi - P2P File Sharing",
+    siteName: "Fipi",
     url: "https://fipi.live",
     type: "website",
     locale: "en_US",
@@ -158,12 +158,6 @@ const jsonLd = {
   operatingSystem: "Web",
   browserRequirements: ["requires HTML5 support", "requires JavaScript"],
   image: "https://fipi.live/logo.png",
-  offers: {
-    "@type": "Offer",
-    price: "0.00",
-    priceCurrency: "USD",
-    availability: "https://schema.org/InStock",
-  },
 };
 
 export default async function RootLayout({

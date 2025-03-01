@@ -5,7 +5,7 @@ type Props = { children: ReactNode };
 
 export const metadata: Metadata = {
   title: "Room",
-  description: "Welcome to your private room! Anyone with the link can join instantly",
+  description: "Start transferring files securely",
 };
 
 const Layout = ({ children }: Props) => {
