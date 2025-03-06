@@ -21,13 +21,6 @@ npm install
 npm run build && npm start
 ```
 
-## Author
-
-👤 **Elvin**
-
-- Website: https://www.linkedin.com/in/vinh-dang-87b4601b1/
-- Github: [@Elvin-dang](https://github.com/Elvin-dang)
-
 ## Show your support
 
 Give a ⭐️ if this project helped you!
