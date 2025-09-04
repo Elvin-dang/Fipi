@@ -6,9 +6,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: "https://fipi.live",
       lastModified: new Date(),
     },
-    {
-      url: "https://fipi.live/g",
-      lastModified: new Date(),
-    },
   ];
 }

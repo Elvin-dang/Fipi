@@ -35,6 +35,7 @@ import { Button } from "@/components/ui/button";
 import { Config, driver } from "driver.js";
 import "driver.js/dist/driver.css";
 import { usePathname } from "next/navigation";
+import { useGlobalStore } from "@/providers/globalStateProvider";
 
 const accordionItems = [
   {
@@ -97,23 +98,23 @@ const accordionItems = [
 
 const gDriver = driver();
 
-const setting1: Config = {
-  showProgress: false,
-  disableActiveInteraction: true,
-  stageRadius: 999,
-  showButtons: ["close"],
-  steps: [
-    {
-      element: "#t-11",
-      popover: {
-        title: "Click on the avatar to start",
-        description: "Go to the lobby where you can meet recipients who share the same network.",
-        side: "top",
-        align: "center",
-      },
-    },
-  ],
-};
+// const setting1: Config = {
+//   showProgress: false,
+//   disableActiveInteraction: true,
+//   stageRadius: 999,
+//   showButtons: ["close"],
+//   steps: [
+//     {
+//       element: "#t-11",
+//       popover: {
+//         title: "Click on the avatar to start",
+//         description: "Go to the lobby where you can meet recipients who share the same network.",
+//         side: "top",
+//         align: "center",
+//       },
+//     },
+//   ],
+// };
 
 const setting2: Config = {
   showProgress: true,
@@ -234,6 +235,7 @@ const setting3: Config = {
 
 const Header = () => {
   const [open, setOpen] = React.useState(false);
+  const shouldAnimated = useGlobalStore((state) => state.shouldAnimateLogo);
   const isDesktop = useMediaQuery("(min-width: 768px)");
   let component;
 
@@ -302,15 +304,14 @@ const Header = () => {
   }
 
   return (
-    <motion.div
-      initial={{ y: -40, opacity: 0 }}
+    <motion.header
+      initial={{ y: 0, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      exit={{ y: -40, opacity: 0 }}
-      transition={{ ease: "easeInOut", duration: 0.75 }}
-      className="mb-2 px-4 flex gap-2 justify-end items-center"
+      transition={{ ease: "easeInOut", duration: 0.5, delay: shouldAnimated ? 0.8 : 0 }}
+      className="px-8 py-4 flex gap-2 justify-end items-center"
     >
       {component}
-    </motion.div>
+    </motion.header>
   );
 };
 
@@ -343,7 +344,7 @@ function TourButton({
     const regexRoom = /^\/rooms\/[a-zA-Z0-9_-]+$/;
 
     if (regexRoot.test(pathname)) {
-      activeSetting.current = setting1;
+      activeSetting.current = setting2;
       setShouldRender(true);
     } else if (regexG.test(pathname)) {
       activeSetting.current = setting2;

@@ -9,11 +9,11 @@ import { DrawerCSSProvider } from "@/providers/drawerCSSProvider";
 import { SettingStoreProvider } from "@/providers/settingStoreProvider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { TouchProvider } from "@/components/HybridTooltip";
-import Footer from "./_components/Footer";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import Header from "./_components/Header";
 import { v4 } from "uuid";
 import { admin } from "@/lib/firebase-admin";
+import { headers } from "next/headers";
+import crypto from "crypto";
 
 export const dynamic = "force-dynamic";
 
@@ -167,6 +167,15 @@ export default async function RootLayout({
 }>) {
   const uid = v4();
   const token = await admin.auth().createCustomToken(uid, { id: uid });
+  const headersList = await headers();
+
+  const ip =
+    headersList.get("x-forwarded-for") ||
+    headersList.get("x-real-ip") ||
+    headersList.get("cf-connecting-ip");
+
+  // @ts-expect-error ip always exists
+  const roomId = crypto.createHmac("md5", process.env.SECRET).update(ip).digest("hex");
 
   return (
     <html lang="en" suppressHydrationWarning={true}>
@@ -181,17 +190,13 @@ export default async function RootLayout({
           disableTransitionOnChange
         >
           <DrawerCSSProvider>
-            <Header />
-            <div className="h-full">
-              <TooltipProvider delayDuration={200}>
-                <TouchProvider>
-                  <GlobalStoreProvider data={{ id: uid, token }}>
-                    <SettingStoreProvider>{children}</SettingStoreProvider>
-                  </GlobalStoreProvider>
-                </TouchProvider>
-              </TooltipProvider>
-            </div>
-            <Footer />
+            <TooltipProvider delayDuration={200}>
+              <TouchProvider>
+                <GlobalStoreProvider data={{ id: uid, token, roomId }}>
+                  <SettingStoreProvider>{children}</SettingStoreProvider>
+                </GlobalStoreProvider>
+              </TouchProvider>
+            </TooltipProvider>
           </DrawerCSSProvider>
         </ThemeProvider>
         <Toaster offset={{ bottom: "60px" }} mobileOffset={{ bottom: "60px" }} />

@@ -1,15 +1,10 @@
 "use client";
 
-import dynamic from "next/dynamic";
+import Room from "./_components/Room/Room";
+import { useGlobalStore } from "@/providers/globalStateProvider";
 
-const InformationBox = dynamic(() => import("@/app/_components/InformationBox"), {
-  ssr: false,
-});
+export default function Page() {
+  const roomId = useGlobalStore((state) => state.roomId);
 
-export default function Home() {
-  return (
-    <main className="h-full">
-      <InformationBox />
-    </main>
-  );
+  return <Room roomId={roomId} type="public" />;
 }

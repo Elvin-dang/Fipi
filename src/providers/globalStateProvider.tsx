@@ -17,6 +17,7 @@ export interface GlobalStoreProviderProps {
   data: {
     id: string;
     token: string;
+    roomId: string;
   };
 }
 
@@ -33,7 +34,7 @@ export const GlobalStoreProvider = ({ children, data }: GlobalStoreProviderProps
   }, []);
 
   if (!storeRef.current) {
-    storeRef.current = createGlobalStore(initGlobalStore(data.id));
+    storeRef.current = createGlobalStore(initGlobalStore(data.id, data.roomId));
   }
 
   return isAuth ? (

@@ -1,5 +1,5 @@
 import React from "react";
-import Room from "../../_components/Room/Room";
+import Room from "../../../_components/Room/Room";
 import { validate } from "uuid";
 import { notFound } from "next/navigation";
 

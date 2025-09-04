@@ -1,16 +1,40 @@
+import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
 import React from "react";
 
 const Spinner = () => {
   return (
-    <div className="h-full">
-      <div className="absolute right-1/2 bottom-1/2 transform translate-x-1/2 translate-y-1/2">
-        <div className="p-4 bg-gradient-to-tr animate-spin from-green-500 to-blue-500 via-purple-500 rounded-full">
-          <div className="bg-primary-foreground rounded-full">
-            <div className="w-24 h-24 rounded-full" />
-          </div>
-        </div>
-      </div>
-    </div>
+    <AnimatePresence>
+      <motion.div
+        key="logo"
+        initial={{
+          x: "-50%",
+          y: "-50%",
+          left: "50%",
+          top: "50%",
+          position: "fixed",
+          zIndex: 50,
+          opacity: 1,
+          scale: 2,
+        }}
+        animate={{
+          x: "-50%",
+          y: "-50%",
+          left: "50%",
+          top: "50%",
+          opacity: [1, 0.5, 1],
+          transition: {
+            opacity: {
+              duration: 2,
+              repeat: Number.POSITIVE_INFINITY,
+              repeatType: "loop",
+            },
+          },
+        }}
+      >
+        <Image src="/favicon.ico" alt="FiPi_logo" width={35} height={35} priority />
+      </motion.div>
+    </AnimatePresence>
   );
 };
 

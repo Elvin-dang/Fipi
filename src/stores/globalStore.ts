@@ -9,10 +9,14 @@ export type State = {
   user: User;
   message?: Message;
   connections: Peer[];
+  roomId: string;
+
+  shouldAnimateLogo: boolean;
 };
 
 export type Actions = {
   setMessage: (message: Message) => void;
+  setAnimateLogo: (value: boolean) => void;
 
   createPeerConnection: (id: string) => RTCPeerConnection;
   getPeerConnection: (id: string) => RTCPeerConnection | undefined;
@@ -21,7 +25,7 @@ export type Actions = {
 
 export type GlobalStore = State & Actions;
 
-export const initGlobalStore = (id: string): State => {
+export const initGlobalStore = (id: string, roomId: string): State => {
   const { name, avatar } = Avatar();
 
   const user: User = {
@@ -30,7 +34,7 @@ export const initGlobalStore = (id: string): State => {
     avatar,
   };
 
-  return { user, connections: [] };
+  return { user, connections: [], roomId, shouldAnimateLogo: true };
 };
 
 export const devtoolsInNonProd =
@@ -43,6 +47,10 @@ export const createGlobalStore = (initState: State) => {
       // Message
       setMessage: (message: Message) => {
         set(() => ({ message }));
+      },
+      //  Logo Animation
+      setAnimateLogo: (value: boolean) => {
+        set(() => ({ shouldAnimateLogo: value }));
       },
       // Peer Connection
       createPeerConnection(id) {
