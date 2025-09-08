@@ -14,7 +14,7 @@ const LeavePrivateRoomButton = ({ leaveRoom, user }: Props) => {
 
   const onClick = () => {
     leaveRoom(user);
-    router.replace(`/g`);
+    router.replace(`/`);
   };
 
   return (
