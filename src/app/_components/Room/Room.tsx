@@ -148,7 +148,7 @@ const Room = ({ roomId, type }: Props) => {
   };
 
   return (
-    <Card className="w-[400px] max-w-[calc(100vw-32px)] m-auto">
+    <Card className="w-[400px] max-w-[calc(100vw-64px)] m-auto">
       <CardHeader>
         <CardTitle>
           <div className="flex items-center justify-between">
