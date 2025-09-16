@@ -46,7 +46,7 @@ const accordionItems = [
         To share a file with another device on the same local network, open Fipi (e.g.,{" "}
         <Button asChild variant="link" className="p-0">
           <Link href="http://fipi.live/g" target="_blank" className="font-semibold">
-            https://fipi.live/g
+            https://fipi.live/
           </Link>
         </Button>
         ) on both devices. Simply click on{" "}
