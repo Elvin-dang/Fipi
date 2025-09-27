@@ -32,7 +32,7 @@ const Spinner = () => {
           },
         }}
       >
-        <Image src="/favicon.ico" alt="FiPi_logo" width={35} height={35} priority />
+        <Image src="/favicon-144x144.png" alt="FiPi_logo" width={35} height={35} priority />
       </motion.div>
     </AnimatePresence>
   );
