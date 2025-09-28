@@ -10,6 +10,7 @@ import { SettingStoreProvider } from "@/providers/settingStoreProvider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { TouchProvider } from "@/components/HybridTooltip";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
 import { v4 } from "uuid";
 import { admin } from "@/lib/firebase-admin";
 import { headers } from "next/headers";
@@ -206,6 +207,7 @@ export default async function RootLayout({
           />
         </ThemeProvider>
         <SpeedInsights />
+        <Analytics />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
