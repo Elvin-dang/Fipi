@@ -16,6 +16,11 @@ import { toast } from "sonner";
 import ToastText from "./ToastText";
 import { useSettingStore } from "@/providers/settingStoreProvider";
 import { Badge } from "@/components/ui/badge";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 type Props = {
   roomId: string;
@@ -26,6 +31,7 @@ type Props = {
 };
 
 const UserListItem = ({ user, self, roomId, sendAllEvent, sendAllTime }: Props) => {
+  const isMobile = useIsMobile();
   const joinRoomAt = useRef<number>(Date.now());
   const [isOpen, setIsOpen] = useState(false);
 
@@ -47,6 +53,8 @@ const UserListItem = ({ user, self, roomId, sendAllEvent, sendAllTime }: Props) 
 
   const [fileSendingProgress, setFileSendingProgress] = useState(0);
   const [fileReceivingProgress, setFileReceivingProgress] = useState(0);
+
+  const [visible, setVisible] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const fileInfoRef = useRef<{
@@ -128,6 +136,8 @@ const UserListItem = ({ user, self, roomId, sendAllEvent, sendAllTime }: Props) 
             setFileSendingProgress(0);
             setIsOpen(false);
             break;
+          case "WAVING":
+            showEmoji();
           default:
             break;
         }
@@ -376,17 +386,85 @@ const UserListItem = ({ user, self, roomId, sendAllEvent, sendAllTime }: Props) 
     }
   };
 
+  const showEmoji = () => {
+    setVisible(true);
+    setTimeout(() => setVisible(false), 3000);
+  };
+
+  const sendEmoji = () => {
+    toast(
+      <p>
+        👋 You&apos;re waving <b>{user.name}</b>
+      </p>,
+      {
+        duration: 2000,
+      }
+    );
+    sendMessage("WAVING", roomId, self.id, user.id, {});
+  };
+
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
       <div
-        className="flex items-center gap-2 justify-between py-2"
+        className="flex items-center gap-2 justify-between py-2 select-none"
         id={self.id === user.id ? "t-self" : undefined}
       >
         <div className="flex items-center gap-2">
-          <Avatar>
-            <AvatarImage src={user.avatar} />
-            <AvatarFallback>...</AvatarFallback>
-          </Avatar>
+          {self.id === user.id ? (
+            <Avatar className="w-10 h-10">
+              <AvatarImage src={user.avatar} />
+              <AvatarFallback>...</AvatarFallback>
+            </Avatar>
+          ) : (
+            <Popover open={visible}>
+              <PopoverTrigger asChild>
+                <Avatar
+                  onClick={sendEmoji}
+                  className={cn(
+                    "group/avatar relative w-10 h-10 cursor-pointer transition-transform",
+                    !isMobile && "hover:scale-105 hover:opacity-80"
+                  )}
+                >
+                  <AvatarImage src={user.avatar} className="cursor-pointer" />
+                  <span
+                    className={cn(
+                      "absolute top-0 left-0 h-full w-full font-medium bg-transparent/70 opacity-0 transition-opacity duration-300",
+                      !isMobile && "group-hover/avatar:opacity-100"
+                    )}
+                  >
+                    <Image src="/assets/hand-wave.gif" alt="Wave" width={40} height={40} />
+                  </span>
+                  <AvatarFallback>...</AvatarFallback>
+                </Avatar>
+              </PopoverTrigger>
+
+              <AnimatePresence>
+                {visible && (
+                  <PopoverContent
+                    side="left"
+                    align="center"
+                    className="relative p-1 w-10 h-10 flex items-center justify-center bg-white dark:bg-gray-800 rounded-lg shadow-lg"
+                  >
+                    <div
+                      className="absolute right-[-4px] top-1/2 -translate-y-1/2 w-2 h-2 bg-white dark:bg-gray-800 rotate-45 border"
+                      style={{
+                        clipPath: "polygon(100% 0%, 100% 100%, 0% 0%)",
+                      }}
+                    />
+                    <motion.span
+                      initial={{ opacity: 0, x: 10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -10 }}
+                      transition={{ duration: 0.3 }}
+                      className="text-2xl z-10"
+                    >
+                      <Image src="/assets/hand-wave.gif" alt="Wave" width={40} height={40} />
+                    </motion.span>
+                  </PopoverContent>
+                )}
+              </AnimatePresence>
+            </Popover>
+          )}
           <p className="font-medium">{user.name}</p>
           {self.id === user.id && <Badge variant="outline">You</Badge>}
         </div>

@@ -8,7 +8,8 @@ export type Payload =
   | AcceptPayload
   | RejectPayload
   | FileSendingPayload
-  | FileCompletePayload;
+  | FileCompletePayload
+  | WavingPayload;
 
 export interface BaseMessage {
   sender: string;
@@ -65,5 +66,10 @@ export interface FileSendingPayload {
 
 export interface FileCompletePayload {
   type: "FILE_COMPLETE";
+  payload: {};
+}
+
+export interface WavingPayload {
+  type: "WAVING";
   payload: {};
 }
