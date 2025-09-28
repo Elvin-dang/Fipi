@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 import { GlobalStoreProvider } from "@/providers/globalStateProvider";
-import { Toaster } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/providers/themeProvider";
 import { DrawerCSSProvider } from "@/providers/drawerCSSProvider";
 import { SettingStoreProvider } from "@/providers/settingStoreProvider";
@@ -198,8 +198,13 @@ export default async function RootLayout({
               </TouchProvider>
             </TooltipProvider>
           </DrawerCSSProvider>
+          <Toaster
+            offset={{ bottom: "60px" }}
+            mobileOffset={{ bottom: "60px" }}
+            expand
+            duration={8000}
+          />
         </ThemeProvider>
-        <Toaster offset={{ bottom: "60px" }} mobileOffset={{ bottom: "60px" }} />
         <SpeedInsights />
         <script
           type="application/ld+json"

@@ -10,7 +10,7 @@ import { User } from "@/models/user";
 import { useGlobalStore } from "@/providers/globalStateProvider";
 import { downloadFile, reduceFiles, toFileSize } from "@/utils/file";
 import { sendMessage } from "@/utils/sendMessage";
-import { Check, CircleCheck, FileCheck2, FileX2, Paperclip, X } from "lucide-react";
+import { Check, CircleCheck, Paperclip, X } from "lucide-react";
 import React, { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import ToastText from "./ToastText";
@@ -205,9 +205,7 @@ const UserListItem = ({ user, self, roomId, sendAllEvent, sendAllTime }: Props) 
       switch (message.type) {
         case "ACCEPT":
           setPendingRequest(false);
-          toast(
-            <ToastText main={user.name} text="accepted the file" icon={<FileCheck2 size={16} />} />
-          );
+          toast(<ToastText main={user.name} text="accepted the file" avatar={user.avatar} />);
 
           const sendQueue: number[] = [];
           let isSending = false;
@@ -226,7 +224,13 @@ const UserListItem = ({ user, self, roomId, sendAllEvent, sendAllTime }: Props) 
               } else {
                 setFileSendingProgress(100);
                 channel.close();
-                toast.success(`File has been sent to ${user.name}`);
+                toast(
+                  <ToastText
+                    main={user.name}
+                    text={`has received the file "${file.name}"`}
+                    avatar={user.avatar}
+                  />
+                );
               }
             }
           };
@@ -262,9 +266,7 @@ const UserListItem = ({ user, self, roomId, sendAllEvent, sendAllTime }: Props) 
           setSendingFile(undefined);
           setPendingRequest(false);
           setIsOpen(false);
-          toast(
-            <ToastText main={user.name} text="rejected the file" icon={<FileX2 size={16} />} />
-          );
+          toast(<ToastText main={user.name} text="rejected the file" avatar={user.avatar} />);
           break;
         default:
           break;
