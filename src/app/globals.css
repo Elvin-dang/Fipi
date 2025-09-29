@@ -34,8 +34,8 @@ body {
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
 
-    --tertiary: #a1a1aa;
-    --el-hover-bg: #f0f0f0;
+    --theme-switcher-primary: #a1a1aa;
+    --theme-switcher-bg: #f0f0f0;
   }
   .dark {
     --background: 222 26% 10%;
@@ -63,8 +63,8 @@ body {
     --chart-4: 340 82% 52%;
     --chart-5: 0 80% 55%;
 
-    --tertiary: #3b3b4f;
-    --el-hover-bg: #232334;
+    --theme-switcher-primary: #3b3b4f;
+    --theme-switcher-bg: #232334;
   }
 }
 
