@@ -13,7 +13,6 @@ import { useGlobalStore } from "@/providers/globalStateProvider";
 import {
   child,
   onChildAdded,
-  onChildChanged,
   onChildRemoved,
   onDisconnect,
   onValue,
@@ -66,18 +65,18 @@ const Room = ({ roomId, type }: Props) => {
     const messagesRef = child(dbRef, `rooms/${roomId}/messages`);
     const receivedMessagesRef = child(messagesRef, user.id);
 
-    console.log("Room:\t Connecting to: ", roomId);
+    // console.log("Room:\t Connecting to: ", roomId);
 
     onValue(connectedRef, (snapshot) => {
       if (snapshot.val() === true) {
-        console.log("Firebase: (Re)Connected");
+        // console.log("Firebase: (Re)Connected");
 
         onDisconnect(userRef).remove();
         onDisconnect(receivedMessagesRef).remove();
 
         set(userRef, user)
           .then(() => {
-            console.log("Firebase: User added to the room");
+            // console.log("Firebase: User added to the room");
           })
           .catch((error) => {
             console.warn("Firebase: Adding user to the room failed: ", error);
@@ -87,7 +86,7 @@ const Room = ({ roomId, type }: Props) => {
         onChildAdded(usersRef, (snapshot) => {
           const addedUser = snapshot.val();
           setUsers((users) => [...users, addedUser]);
-          console.log("Room:\t user_added: ", addedUser);
+          // console.log("Room:\t user_added: ", addedUser);
         });
 
         onChildRemoved(
@@ -96,17 +95,17 @@ const Room = ({ roomId, type }: Props) => {
             const removedUser = snapshot.val();
             setUsers((users) => users.filter((u) => u.id !== removedUser.id));
             removePeerConnection(removedUser.id);
-            console.log("Room:\t user_removed: ", removedUser);
+            // console.log("Room:\t user_removed: ", removedUser);
           },
           () => {
             // Handle case when the whole room is removed from Firebase
           }
         );
 
-        onChildChanged(usersRef, (snapshot) => {
-          const changedUser = snapshot.val();
-          console.log("Room:\t user_changed: ", changedUser);
-        });
+        // onChildChanged(usersRef, (snapshot) => {
+        //   const changedUser = snapshot.val();
+        //   console.log("Room:\t user_changed: ", changedUser);
+        // });
 
         // Message section
         onChildAdded(receivedMessagesRef, (snapshot) => {
@@ -114,7 +113,7 @@ const Room = ({ roomId, type }: Props) => {
           setMessage(addedMessage);
         });
       } else {
-        console.log("Firebase: Disconnected");
+        // console.log("Firebase: Disconnected");
 
         off(usersRef);
         off(receivedMessagesRef);
