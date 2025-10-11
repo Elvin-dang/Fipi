@@ -1,4 +1,3 @@
-import ThemeSwitcher from "@/components/ThemeSwitcher";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -15,7 +14,9 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useSettingStore } from "@/providers/settingStoreProvider";
 import { Settings } from "lucide-react";
+import { useTheme } from "next-themes";
 import React, { ReactNode } from "react";
+import { ThemeSwitcher } from "next-theme-switcher";
 
 type Props = {
   children?: ReactNode;
@@ -23,6 +24,7 @@ type Props = {
 };
 
 const SettingDrawer = ({ children, id }: Props) => {
+  const { theme, setTheme } = useTheme();
   const { autoSave, setAutoSave } = useSettingStore((state) => state);
 
   return (
@@ -38,7 +40,7 @@ const SettingDrawer = ({ children, id }: Props) => {
             <DrawerTitle>
               <div className="flex items-center justify-between">
                 <p className="text-xl">Setting</p>
-                <ThemeSwitcher />
+                <ThemeSwitcher theme={theme} onThemeChange={setTheme} />
               </div>
             </DrawerTitle>
             <DrawerDescription className="text-left">Room and system settings</DrawerDescription>
