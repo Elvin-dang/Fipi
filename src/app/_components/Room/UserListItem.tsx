@@ -28,19 +28,9 @@ type Props = {
   self: User;
   sendAllEvent?: ChangeEvent<HTMLInputElement>;
   sendAllTime?: number;
-  onPendingRespondChange?: (userId: string, pending: boolean) => void;
-  registerOpenCallback?: (userId: string, fn: (open?: boolean) => void) => void;
 };
 
-const UserListItem = ({
-  user,
-  self,
-  roomId,
-  sendAllEvent,
-  sendAllTime,
-  onPendingRespondChange,
-  registerOpenCallback,
-}: Props) => {
+const UserListItem = ({ user, self, roomId, sendAllEvent, sendAllTime }: Props) => {
   const isMobile = useIsMobile();
   const joinRoomAt = useRef<number>(Date.now());
   const [isOpen, setIsOpen] = useState(false);
@@ -156,21 +146,6 @@ const UserListItem = ({
 
     asyncTask();
   }, [message]);
-
-  // notify parent when pendingRespond changes
-  useEffect(() => {
-    if (onPendingRespondChange) onPendingRespondChange(user.id, pendingRespond);
-  }, [pendingRespond]);
-
-  // allow parent to request opening this user's collapsible
-  useEffect(() => {
-    if (!registerOpenCallback) return;
-    registerOpenCallback(user.id, (open = true) => setIsOpen(!!open));
-    return () => {
-      // unregister by passing a noop
-      registerOpenCallback(user.id, () => {});
-    };
-  }, [registerOpenCallback]);
 
   const openChooseFiles = () => {
     fileInputRef.current?.click();
@@ -432,7 +407,7 @@ const UserListItem = ({
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
       <div
         className="flex items-center gap-2 justify-between py-2 select-none"
-        id={`user-${user.id}`}
+        id={self.id === user.id ? "t-self" : undefined}
       >
         <div className="flex items-center gap-2">
           {self.id === user.id ? (
@@ -457,13 +432,7 @@ const UserListItem = ({
                       !isMobile && "group-hover/avatar:opacity-100"
                     )}
                   >
-                    <Image
-                      src="/assets/hand-wave.gif"
-                      alt="Wave"
-                      width={40}
-                      height={40}
-                      unoptimized
-                    />
+                    <Image src="/assets/hand-wave.gif" alt="Wave" width={40} height={40} />
                   </span>
                   <AvatarFallback>...</AvatarFallback>
                 </Avatar>
@@ -489,13 +458,7 @@ const UserListItem = ({
                       transition={{ duration: 0.3 }}
                       className="text-2xl z-10"
                     >
-                      <Image
-                        src="/assets/hand-wave.gif"
-                        alt="Wave"
-                        width={40}
-                        height={40}
-                        unoptimized
-                      />
+                      <Image src="/assets/hand-wave.gif" alt="Wave" width={40} height={40} />
                     </motion.span>
                   </PopoverContent>
                 )}
